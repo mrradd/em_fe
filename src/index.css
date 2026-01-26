@@ -1,0 +1,21 @@
+:root {
+    --space-indigo: #322B46ff;
+    --vintage-grape: #452F4Cff;
+    --bitter-chocolate: #7F3938ff;
+    --reddish-brown: #A5422Eff;
+    --mauve-shadow: #452A35ff;
+    --chestnut: #7F3327ff;
+    --rosy-copper: #C8664Eff;
+    --dusty-mauve: #A34F55ff;
+    --wine-plum: #623137ff;
+    --rich-mahogany: #441C1Bff;
+}
+
+nav.mantine-AppShell-navbar {
+    background-color: var(--dusty-mauve);
+    color: white;
+}
+
+a.mantine-NavLink-root:hover {
+    background-color: var(--bitter-chocolate);
+}
