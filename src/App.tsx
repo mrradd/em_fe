@@ -2,6 +2,7 @@ import './App.css';
 import { AppShell, BackgroundImage, Burger, NavLink, Stack, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { Route, Routes } from 'react-router-dom';
+import APITest from './components/APITest';
 
 function App() {
   const [opened, { toggle }] = useDisclosure();
@@ -28,17 +29,10 @@ function App() {
       </AppShell.Header>
 
       <AppShell.Navbar>
-        <Stack>
-          <NavLink
-            href='/home'
-            label='Home'
-          />
-        </Stack>
       </AppShell.Navbar>
 
       <AppShell.Main>
-        <Routes>
-        </Routes>
+        <APITest></APITest>
       </AppShell.Main>
     </AppShell >
   );
