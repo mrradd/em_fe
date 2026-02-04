@@ -1,8 +1,7 @@
 import './App.css';
 import { AppShell, BackgroundImage, Burger, NavLink, Stack, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { Route, Routes } from 'react-router-dom';
-import APITest from './components/APITest';
+import { ThreadList } from './components/ThreadList';
 
 function App() {
   const [opened, { toggle }] = useDisclosure();
@@ -12,27 +11,27 @@ function App() {
       padding='md'
       header={{ height: 60 }}
       navbar={{
-        width: 150,
+        width: 300,
         breakpoint: 'sm',
         collapsed: { mobile: !opened },
       }}
     >
       <AppShell.Header>
-        <Text c='white'>Electric Meatball</Text>
+        <Text c='black'>Electric Meatball</Text>
         <Burger
           opened={opened}
           onClick={toggle}
           hiddenFrom='sm'
           size='sm'
-          color='white'
+          color='black'
         />
       </AppShell.Header>
 
       <AppShell.Navbar>
+        <ThreadList />
       </AppShell.Navbar>
 
       <AppShell.Main>
-        <APITest></APITest>
       </AppShell.Main>
     </AppShell >
   );
