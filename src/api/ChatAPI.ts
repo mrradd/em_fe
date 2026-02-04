@@ -1,5 +1,6 @@
 import axios from "axios";
 import type { ChatThreadDTO } from "../dtos/ChatThreadDTO";
+import type { ChatThreadDetailDTO } from "../dtos/ChatThreadDetailDTO";
 
 const apiUrl = `${import.meta.env.VITE_API_BASE_URL}/api/v1`;
 
@@ -37,6 +38,25 @@ export class ChatAPI {
       }
 
       return resp.data.data.chatThreads;
+    }
+    catch (err: any) {
+      console.error(err.message)
+      return undefined;
+    }
+  }
+
+  static async getThreadDetails(threadId: string): Promise<ChatThreadDetailDTO | undefined> {
+    try {
+      const resp = await axios.get(
+        `${apiUrl}/chat/thread/${threadId}/detail`
+      );
+
+      if (resp.status !== 200) {
+        console.warn(`getThreadDetails: code ${resp.status}`);
+        return undefined;
+      }
+
+      return resp.data.data;
     }
     catch (err: any) {
       console.error(err.message)

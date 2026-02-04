@@ -1,5 +1,7 @@
 import { Button, Card, Flex, Text } from "@mantine/core";
 import { msToDate } from "../utils/RadUtils";
+import { useNavigate } from "react-router-dom";
+import { useCallback } from "react";
 
 type ThreadCardProps = {
   id: string, //uuid
@@ -7,7 +9,16 @@ type ThreadCardProps = {
   createdTimestamp: number, //in ms.
 };
 
+/**
+ * Displays the name, created date, and control buttons for a single thread in a card form.
+ */
 export const ThreadCard = ({ id, name, createdTimestamp }: ThreadCardProps) => {
+  const navigate = useNavigate();
+
+  const viewPressed = useCallback(() => {
+    navigate(`/chat/${id}`);
+  }, [id, navigate]);
+
   return (
     <Card shadow="sm" padding="lg" radius="md" withBorder>
       <Card.Section>
@@ -18,15 +29,15 @@ export const ThreadCard = ({ id, name, createdTimestamp }: ThreadCardProps) => {
           align="center"
           direction="column"
           wrap="nowrap">
-          <Text>{name}</Text>
-          <Text>{msToDate(createdTimestamp)}</Text>
+          <Text size="lg">{name}</Text>
+          <Text size="sm" truncate="end">Created: {msToDate(createdTimestamp)}</Text>
         </Flex>
       </Card.Section>
 
       <Card.Section>
         <Flex
           mih={50}
-          gap="sm"
+          gap="lg"
           justify="center"
           align="center"
           direction="row"
@@ -34,7 +45,7 @@ export const ThreadCard = ({ id, name, createdTimestamp }: ThreadCardProps) => {
         >
           <Button>Edit</Button>
           <Button>Delete</Button>
-          <Button>View</Button>
+          <Button onClick={viewPressed}>View</Button>
         </Flex>
       </Card.Section>
     </Card>

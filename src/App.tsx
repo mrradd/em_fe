@@ -2,6 +2,9 @@ import './App.css';
 import { AppShell, BackgroundImage, Burger, NavLink, Stack, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { ThreadList } from './components/ThreadList';
+import { Route, Routes } from 'react-router-dom';
+import { Home } from './pages/Home';
+import { ChatPage } from './pages/ChatPage';
 
 function App() {
   const [opened, { toggle }] = useDisclosure();
@@ -32,6 +35,10 @@ function App() {
       </AppShell.Navbar>
 
       <AppShell.Main>
+        <Routes>
+          <Route path='/home' element={<Home />}></Route>
+          <Route path='/chat/:threadId' element={<ChatPage />}></Route>
+        </Routes>
       </AppShell.Main>
     </AppShell >
   );

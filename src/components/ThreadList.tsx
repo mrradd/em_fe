@@ -4,6 +4,9 @@ import { useEffect, useState, useTransition } from "react";
 import { ChatAPI } from "../api/ChatAPI";
 import type { ChatThreadDTO } from "../dtos/ChatThreadDTO";
 
+/**
+ * Retrieves a list of Chat Threads from the api and displays them.
+ */
 export const ThreadList = () => {
   const [threads, setThreads] = useState<ChatThreadDTO[]>([]);
   const [isPending, startTransition] = useTransition();
