@@ -25,7 +25,6 @@ export const ThreadList = () => {
     ));
   };
 
-  //todo ch. get the list of ChatThreads.
   return (
     <Stack>
       {renderThreads()}

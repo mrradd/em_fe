@@ -1,4 +1,3 @@
-
 /**
  * Convert a millisecond timestamp to a readable date-time string.
  * @param msTimestamp - Milliseconds since the Unix epoch.
