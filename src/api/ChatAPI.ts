@@ -1,6 +1,7 @@
 import axios from "axios";
 import type { ChatThreadDTO } from "../dtos/ChatThreadDTO";
 import type { ChatThreadDetailDTO } from "../dtos/ChatThreadDetailDTO";
+import type { ChatDTO } from "../dtos/ChatDTO";
 
 const apiUrl = `${import.meta.env.VITE_API_BASE_URL}/api/v1`;
 
@@ -64,7 +65,7 @@ export class ChatAPI {
     }
   }
 
-  static async sendChatRequest(message: string, threadId: string) {
+  static async sendChatRequest(message: string, threadId: string): Promise<ChatDTO | undefined> {
     try {
       const resp = await axios.post(
         `${apiUrl}/chat/send`, {
