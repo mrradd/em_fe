@@ -1,7 +1,8 @@
-import { Button, Card, Flex, Text } from "@mantine/core";
+import { Button, Card, Flex, Group, Text } from "@mantine/core";
 import { msToDate } from "../utils/RadUtils";
 import { useNavigate } from "react-router-dom";
 import { useCallback } from "react";
+import { observer } from "mobx-react-lite";
 
 type ThreadCardProps = {
   id: string, //uuid
@@ -12,7 +13,7 @@ type ThreadCardProps = {
 /**
  * Displays the name, created date, and control buttons for a single thread in a card form.
  */
-export const ThreadCard = ({ id, name, createdTimestamp }: ThreadCardProps) => {
+export const ThreadCard = observer(({ id, name, createdTimestamp }: ThreadCardProps) => {
   const navigate = useNavigate();
 
   const viewPressed = useCallback(() => {
@@ -35,19 +36,18 @@ export const ThreadCard = ({ id, name, createdTimestamp }: ThreadCardProps) => {
       </Card.Section>
 
       <Card.Section>
-        <Flex
+        <Group
           mih={50}
           gap="lg"
           justify="center"
           align="center"
-          direction="row"
           wrap="nowrap"
         >
           <Button>Edit</Button>
           <Button>Delete</Button>
           <Button onClick={viewPressed}>View</Button>
-        </Flex>
+        </Group>
       </Card.Section>
     </Card>
   );
-};
+});

@@ -1,4 +1,5 @@
 import { Card, Text } from "@mantine/core";
+import { observer } from "mobx-react-lite";
 import Markdown from 'react-markdown'
 
 type ChatCardProps = {
@@ -7,9 +8,9 @@ type ChatCardProps = {
 };
 
 /**
- * Displays the name, created date, and control buttons for a single thread in a card form.
+ * Displays a single chat message and the role it came from.
  */
-export const ChatCard = ({ message, role }: ChatCardProps) => {
+export const ChatCard = observer(({ message, role }: ChatCardProps) => {
   return (
     <Card shadow="sm" padding="lg" radius="md" withBorder>
       <Card.Section style={{ paddingLeft: "10px", paddingTop: "10px" }}>
@@ -19,7 +20,6 @@ export const ChatCard = ({ message, role }: ChatCardProps) => {
       <Card.Section style={{ paddingLeft: "10px", paddingRight: "10px" }}>
         <Markdown>{message}</Markdown>
       </Card.Section>
-
     </Card>
   );
-};
+});

@@ -6,11 +6,11 @@ const apiUrl = `${import.meta.env.VITE_API_BASE_URL}/api/v1`;
 
 export class ChatAPI {
 
-  static async createNewChatThread(threadName: string) {
+  static async createNewChatThread(newThreadName: string): Promise<ChatThreadDetailDTO | undefined> {
     try {
       const resp = await axios.post(
         `${apiUrl}/chat/thread/create`, {
-        threadName: threadName,
+        threadName: newThreadName,
       });
 
       if (resp.status !== 200) {
@@ -18,7 +18,7 @@ export class ChatAPI {
         return undefined;
       }
 
-      return resp.data;
+      return resp.data.data;
     }
     catch (err: any) {
       console.error(err.message)
@@ -77,7 +77,7 @@ export class ChatAPI {
         return undefined;
       }
 
-      return resp.data;
+      return resp.data.data;
     }
     catch (err: any) {
       console.error(err.message)

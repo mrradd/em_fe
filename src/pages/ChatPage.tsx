@@ -20,7 +20,7 @@ function reducer(state: ChatPageState, action: any) {
     case "setChatThread":
       return {
         ...state,
-        chatThread: action.chatThread,
+        chatThread: action.chatThread as ChatThreadDetailDTO,
       }
     default:
       console.log(`Reducer action '${action}' is not valid.`);
@@ -37,37 +37,33 @@ export const ChatPage = observer(() => {
   const params = useParams();
 
   useEffect(() => {
-    startTransition(() => {
-      const loadThreadDetails = async () => {
-        if (!params.threadId) {
-          console.warn("No threadId given.")
-          return;
-        }
+    startTransition(async () => {
+      if (!params.threadId) {
+        console.warn("No threadId given.")
+        return;
+      }
 
-        const resp: ChatThreadDetailDTO | undefined = await ChatAPI.getThreadDetails(params.threadId);
+      const resp: ChatThreadDetailDTO | undefined = await ChatAPI.getThreadDetails(params.threadId);
 
-        if (!resp) {
-          console.warn("No proper ChatThreadDetailDTO returned.");
-          return;
-        }
+      if (!resp) {
+        console.warn("No proper ChatThreadDetailDTO returned.");
+        return;
+      }
 
-        dispatch({ type: "setChatThread", chatThread: resp });
-      };
-
-      void loadThreadDetails();
+      dispatch({ type: "setChatThread", chatThread: resp });
     });
-  }, []);
+  }, [params.threadId]);
 
   const renderChats = () => {
-    if (!state.chatThread?.chats) {
-      return null;
-    }
-
     if (isPending) {
       return <Text>...LOADING...</Text>
     }
 
-    return state.chatThread.chats.map((chat: ChatDTO) => {
+    if (state.chatThread?.chats?.length === 0) {
+      return <Text>No chats in this thread yet.</Text>
+    }
+
+    return state.chatThread?.chats?.map((chat: ChatDTO) => {
       return (
         <ChatCard
           key={chat.id}
