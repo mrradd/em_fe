@@ -36,7 +36,7 @@ function App() {
 
       <AppShell.Main>
         <Routes>
-          <Route path='/home' element={<Home />}></Route>
+          <Route path='/' element={<Home />}></Route>
           <Route path='/chat/:threadId' element={<ChatPage />}></Route>
         </Routes>
       </AppShell.Main>

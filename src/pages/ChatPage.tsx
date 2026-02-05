@@ -5,7 +5,7 @@ import type { ChatThreadDetailDTO } from "../dtos/ChatThreadDetailDTO";
 import { ChatAPI } from "../api/ChatAPI";
 import { ChatCard } from "../components/ChatCard";
 import type { ChatDTO } from "../dtos/ChatDTO";
-import { Stack } from "@mantine/core";
+import { Stack, Text } from "@mantine/core";
 
 type ChatPageState = {
   chatThread: ChatThreadDetailDTO,
@@ -56,20 +56,24 @@ export const ChatPage = observer(() => {
 
       void loadThreadDetails();
     });
-  }, [params.threadId]);
+  }, []);
 
   const renderChats = () => {
+    if (!state.chatThread?.chats) {
+      return null;
+    }
+
+    if (isPending) {
+      return <Text>...LOADING...</Text>
+    }
+
     return state.chatThread.chats.map((chat: ChatDTO) => {
-      //id, threadId, message, role, createdTimestamp
-      return (<>
+      return (
         <ChatCard
           key={chat.id}
-          id={chat.id}
-          threadId={chat.threadId}
           message={chat.message}
-          role={chat.role}
-          createdTimestamp={chat.createdTimestamp} />
-      </>);
+          role={chat.role} />
+      );
     });
   };
 
