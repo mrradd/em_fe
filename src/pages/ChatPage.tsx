@@ -1,11 +1,13 @@
 import { observer } from "mobx-react-lite";
-import { useEffect, useReducer, useTransition } from "react";
+import { useEffect, useLayoutEffect, useReducer, useRef, useState, useTransition } from "react";
 import { useParams } from "react-router-dom";
 import type { ChatThreadDetailDTO } from "../dtos/ChatThreadDetailDTO";
 import { ChatAPI } from "../api/ChatAPI";
 import { ChatCard } from "../components/ChatCard";
 import type { ChatDTO } from "../dtos/ChatDTO";
-import { Stack, Text } from "@mantine/core";
+import { Affix, Stack, Text, Textarea, useMantineTheme } from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
+import { uiStore } from "../stores/uiStore";
 
 type ChatPageState = {
   chatThread: ChatThreadDetailDTO,
@@ -35,6 +37,37 @@ export const ChatPage = observer(() => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [isPending, startTransition] = useTransition();
   const params = useParams();
+  const contentRef = useRef<HTMLDivElement | null>(null);
+  const [affixRect, setAffixRect] = useState<{ left: number; width: number } | null>(null);
+  const theme = useMantineTheme();
+  const smBreakpoint = typeof theme.breakpoints.sm === "number"
+    ? `${theme.breakpoints.sm}px`
+    : theme.breakpoints.sm;
+  const isSmallScreen = useMediaQuery(`(max-width: ${smBreakpoint})`);
+  const hideTextarea = isSmallScreen && uiStore.navbarOpened;
+
+  useLayoutEffect(() => {
+    const updateAffixRect = () => {
+      if (!contentRef.current) return;
+      const rect = contentRef.current.getBoundingClientRect();
+      setAffixRect({ left: rect.left, width: rect.width });
+    };
+
+    updateAffixRect();
+
+    const handleResize = () => updateAffixRect();
+    window.addEventListener("resize", handleResize);
+
+    const observer = new ResizeObserver(() => updateAffixRect());
+    if (contentRef.current) {
+      observer.observe(contentRef.current);
+    }
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      observer.disconnect();
+    };
+  }, []);
 
   useEffect(() => {
     startTransition(async () => {
@@ -74,8 +107,27 @@ export const ChatPage = observer(() => {
   };
 
   return (
-    <Stack>
-      {renderChats()}
-    </Stack>
+    <>
+      <div ref={contentRef}>
+        <Stack style={{ paddingBottom: "96px" }}>
+          {renderChats()}
+        </Stack>
+      </div>
+      <Affix
+        position={{ bottom: 0 }}
+        withinPortal={false}
+        style={{
+          left: affixRect ? `${affixRect.left}px` : 0,
+          width: affixRect ? `${affixRect.width}px` : "100%",
+          right: "auto",
+        }}
+      >
+        {!hideTextarea && (
+          <div style={{ padding: "12px", background: "#fff", borderTop: "1px solid #e9ecef" }}>
+            <Textarea />
+          </div>
+        )}
+      </Affix>
+    </>
   );
 });

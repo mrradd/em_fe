@@ -1,14 +1,20 @@
+/* eslint-disable react-refresh/only-export-components */
 import './App.css';
-import { AppShell, BackgroundImage, Burger, Container, NavLink, Space, Stack, Text } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
+import { AppShell, Burger, Button, Divider, Space, Stack, Text } from '@mantine/core';
+import { observer } from 'mobx-react-lite';
 import { ThreadList } from './components/ThreadList';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useNavigate } from 'react-router-dom';
 import { Home } from './pages/Home';
 import { ChatPage } from './pages/ChatPage';
 import { NewThreadButton } from './components/NewThreadButton';
+import { uiStore } from './stores/uiStore';
 
-function App() {
-  const [opened, { toggle }] = useDisclosure();
+/**
+ * The main entry point for the application.
+ */
+export const App = observer(() => {
+  const navigate = useNavigate();
+  const opened = uiStore.navbarOpened;
 
   return (
     <AppShell
@@ -24,7 +30,7 @@ function App() {
         <Text c='black'>Electric Meatball</Text>
         <Burger
           opened={opened}
-          onClick={toggle}
+          onClick={uiStore.toggleNavbar}
           hiddenFrom='sm'
           size='sm'
           color='black'
@@ -32,15 +38,20 @@ function App() {
       </AppShell.Header>
 
       <AppShell.Navbar>
-
-        <Stack>
-          <Space />
-          <Container>
-            <NewThreadButton />
-          </Container>
-          <ThreadList />
+        <Space h="sm" />
+        <Stack style={{ marginLeft: "10px", marginRight: "10px" }}>
+          <Button onClick={() => { navigate("/") }}>Home</Button>
+          <NewThreadButton />
         </Stack>
 
+        <Space h="sm" />
+        <Divider />
+        <Space h="sm" />
+
+        <Stack style={{ overflow: "auto" }}>
+          <ThreadList />
+        </Stack>
+        <Space h="sm" />
       </AppShell.Navbar>
 
       <AppShell.Main>
@@ -51,6 +62,4 @@ function App() {
       </AppShell.Main>
     </AppShell >
   );
-}
-
-export default App;
+});
