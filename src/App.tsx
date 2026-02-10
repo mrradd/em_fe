@@ -7,7 +7,7 @@ import { Route, Routes, useNavigate } from 'react-router-dom';
 import { Home } from './pages/Home';
 import { ChatPage } from './pages/ChatPage';
 import { NewThreadButton } from './components/NewThreadButton';
-import { uiStore } from './stores/uiStore';
+import { uiStore } from './stores/TheUiStore';
 
 /**
  * The main entry point for the application.

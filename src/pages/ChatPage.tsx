@@ -7,7 +7,7 @@ import { ChatCard } from "../components/ChatCard";
 import type { ChatDTO } from "../dtos/ChatDTO";
 import { Affix, Button, Stack, Text, Textarea, useMantineTheme } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
-import { uiStore } from "../stores/uiStore";
+import { uiStore } from "../stores/TheUiStore";
 
 type ChatPageState = {
   chatThread: ChatThreadDetailDTO,
