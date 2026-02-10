@@ -1,5 +1,5 @@
 import { observer } from "mobx-react-lite";
-import { useEffect, useLayoutEffect, useReducer, useRef, useState, useTransition } from "react";
+import { useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState, useTransition } from "react";
 import { useParams } from "react-router-dom";
 import type { ChatThreadDetailDTO } from "../dtos/ChatThreadDetailDTO";
 import { ChatAPI } from "../api/ChatAPI";
@@ -7,7 +7,7 @@ import { ChatCard } from "../components/ChatCard";
 import type { ChatDTO } from "../dtos/ChatDTO";
 import { Affix, Button, Stack, Text, Textarea, useMantineTheme } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
-import { uiStore } from "../stores/TheUiStore";
+import { useStores } from "../hooks/useStores";
 
 type ChatPageState = {
   chatThread: ChatThreadDetailDTO,
@@ -51,6 +51,7 @@ function reducer(state: ChatPageState, action: any) {
  * Renders all chats for a single thread.
  */
 export const ChatPage = observer(() => {
+  const { uiStore } = useStores();
   const [state, dispatch] = useReducer(reducer, initialState);
   const [isPending, startTransition] = useTransition();
   const [isSendPending, startSendTransition] = useTransition();
@@ -58,11 +59,16 @@ export const ChatPage = observer(() => {
   const contentRef = useRef<HTMLDivElement | null>(null);
   const [affixRect, setAffixRect] = useState<{ left: number; width: number } | null>(null);
   const theme = useMantineTheme();
-  const smBreakpoint = typeof theme.breakpoints.sm === "number"
-    ? `${theme.breakpoints.sm}px`
-    : theme.breakpoints.sm;
-  const isSmallScreen = useMediaQuery(`(max-width: ${smBreakpoint})`);
-  const hideTextarea = isSmallScreen && uiStore.navbarOpened;
+
+  const smMediaQuery = useMemo(() => {
+    return `(max-width: ${theme.breakpoints.sm})`;
+  }, [theme.breakpoints.sm]);
+
+  const isSmallScreen = useMediaQuery(smMediaQuery);
+
+  const hideTextarea = useMemo(() => {
+    return isSmallScreen && uiStore.navbarOpened;
+  }, [isSmallScreen, uiStore.navbarOpened]);
 
   useLayoutEffect(() => {
     const updateAffixRect = () => {
@@ -136,15 +142,15 @@ export const ChatPage = observer(() => {
     startSendTransition(async () => {
       /** 
        * This user chat is loaded into the list after a send. Its id and date are dummy data
-       * and do not represent the final data from the database. It is mearly a placeholder until
-       * a proper load happens.
+       * and do not represent the final data from the database. The values are merely a placeholder
+       * until a proper load happens.
        */
       const userChat: ChatDTO = {
-        id: `local-${Date.now()}`,//temporary id
+        id: `local-${Date.now()}`,//dummy id
         threadId: state.chatThread.id,
         message: state.textValue,
         role: "user",
-        createdTimestamp: Date.now(),//temporary timestamp
+        createdTimestamp: Date.now(),//dummy timestamp
       };
 
       dispatch({ type: "appendChats", chats: [userChat] });

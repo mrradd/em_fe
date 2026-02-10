@@ -1,6 +1,6 @@
 import { makeAutoObservable } from "mobx";
 
-class UiStore {
+export class UiStore {
   navbarOpened = false;
 
   constructor() {
@@ -15,5 +15,3 @@ class UiStore {
     this.navbarOpened = !this.navbarOpened;
   };
 }
-
-export const uiStore = new UiStore();
