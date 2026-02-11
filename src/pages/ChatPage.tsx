@@ -48,7 +48,9 @@ function reducer(state: ChatPageState, action: any) {
 }
 
 /**
- * Renders all chats for a single thread.
+ * Renders all chats for a single thread. Has text area for writing prompts and a
+ * button for sending the request fixed to the bottom of the page; the button and
+ * text area shrink/grow with the window dimenstions.
  */
 export const ChatPage = observer(() => {
   const { uiStore } = useStores();
@@ -111,7 +113,7 @@ export const ChatPage = observer(() => {
     });
   }, [params.threadId]);
 
-  const renderButton = () => {
+  const renderSendButton = () => {
     if (isSendPending) {
       return (<Button>...THINKING...</Button>);
     }
@@ -119,7 +121,7 @@ export const ChatPage = observer(() => {
     return (<Button onClick={sendChat}>Send</Button>);
   };
 
-  const renderChats = () => {
+  const renderChatList = () => {
     if (isPending) {
       return <Text>...LOADING...</Text>
     }
@@ -168,9 +170,12 @@ export const ChatPage = observer(() => {
     <>
       <div ref={contentRef}>
         <Stack style={{ paddingBottom: "200px" }}>
-          {renderChats()}
+          {renderChatList()}
         </Stack>
       </div>
+
+      {/* This fixes the text area and the send button to the bottom of the chat page.
+          It also shrinks/grows with the window dimensions. */}
       <Affix
         position={{ bottom: 0 }}
         withinPortal={false}
@@ -186,7 +191,7 @@ export const ChatPage = observer(() => {
               <Textarea value={state.textValue} rows={5} onChange={(e) => {
                 dispatch({ type: "updateTextValue", textValue: e.target.value })
               }} />
-              {renderButton()}
+              {renderSendButton()}
             </Stack>
           </div>
         )}
