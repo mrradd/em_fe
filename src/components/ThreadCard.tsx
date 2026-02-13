@@ -1,7 +1,6 @@
 import { Button, Card, Flex, Group, Text } from "@mantine/core";
 import { msToDate } from "../utils/RadUtils";
 import { useNavigate } from "react-router-dom";
-import { useCallback } from "react";
 import { observer } from "mobx-react-lite";
 import { DeleteThreadModal } from "./DeleteThreadModal";
 import { useDisclosure } from "@mantine/hooks";
