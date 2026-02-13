@@ -20,7 +20,7 @@ export class ChatAPI {
       });
 
       if (resp.status !== 200) {
-        console.warn(`sendChat: code ${resp.status}`);
+        console.warn(`createNewChatThread: code ${resp.status}`);
         return undefined;
       }
 
@@ -31,6 +31,28 @@ export class ChatAPI {
       return undefined;
     }
   };
+
+  /**
+   * Calls the API to delete a chat thread by ID.
+   * @param threadId The ID of the chat thread to delete.
+   * @returns `true` if the thread was deleted, otherwise `false`.
+   */
+  static async deleteThread(threadId: string): Promise<boolean> {
+    try {
+      const resp = await axios.delete(`${apiUrl}/chat/thread/${threadId}`);
+
+      if (resp.status !== 200) {
+        console.warn(`deleteThread: code ${resp.status}`);
+        return false;
+      }
+
+      return true;
+    }
+    catch (err: any) {
+      console.error(err.message)
+      return false;
+    }
+  }
 
   /**
    * Calls the API to fetch all chat threads.

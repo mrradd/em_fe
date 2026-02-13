@@ -5,6 +5,7 @@ import { useCallback } from "react";
 import { observer } from "mobx-react-lite";
 import { DeleteThreadModal } from "./DeleteThreadModal";
 import { useDisclosure } from "@mantine/hooks";
+import { EditThreadModal } from "./EditThreadModal";
 
 type ThreadCardProps = {
   id: string, //uuid
@@ -18,22 +19,33 @@ type ThreadCardProps = {
 export const ThreadCard = observer(({ id, name, createdTimestamp }: ThreadCardProps) => {
   const navigate = useNavigate();
   const [deleteModalOpened, deleteModalhandlers] = useDisclosure(false);
+  const [editModalOpened, editModalhandlers] = useDisclosure(false);
 
   const deletePressed = () => {
-    return deleteModalhandlers.open();
+    deleteModalhandlers.open();
   };
 
-  const editPressed = useCallback(() => {
-    console.log("Edit pressed");
-  }, []);
+  const deleteModalOnClose = () => {
+    deleteModalhandlers.close();
+  };
 
-  const viewPressed = useCallback(() => {
+  const editPressed = () => {
+    editModalhandlers.open();
+  };
+
+  const editModalOnClose = () => {
+    editModalhandlers.close();
+  };
+
+  const viewPressed = () => {
     navigate(`/chat/${id}`);
-  }, [id, navigate]);
+  };
 
   return (
     <>
-      <DeleteThreadModal threadId={id} isOpened={deleteModalOpened} onClose={() => { deleteModalhandlers.toggle() }}></DeleteThreadModal>
+      <EditThreadModal threadId={id} isOpened={editModalOpened} onClose={editModalOnClose} name={name} />
+      <DeleteThreadModal threadId={id} isOpened={deleteModalOpened} onClose={deleteModalOnClose} name={name} />
+
       <Card shadow="sm" padding="lg" radius="md" withBorder>
         <Card.Section>
           <Flex

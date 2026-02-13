@@ -22,6 +22,9 @@ export class ChatThreadStore {
     }
   }
 
+  /**
+   * Fetches the thread list from the API, maps DTOs to store threads, and replaces the store list.
+   */
   async fetchThreadList() {
     const threadDtos = await ChatAPI.getThreadList();
 
