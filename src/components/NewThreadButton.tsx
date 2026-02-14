@@ -1,6 +1,5 @@
 import { Button, Text } from "@mantine/core"
 import { useTransition } from "react";
-import { ChatAPI } from "../api/ChatAPI";
 import type { ChatThreadDetailDTO } from "../dtos/ChatThreadDetailDTO";
 import { useNavigate } from "react-router-dom";
 import { observer } from "mobx-react-lite";

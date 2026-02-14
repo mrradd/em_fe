@@ -1,4 +1,3 @@
-/* eslint-disable react-refresh/only-export-components */
 import "./App.css";
 import { AppShell, Burger, Button, Divider, Space, Stack, Text } from "@mantine/core";
 import { observer } from "mobx-react-lite";
