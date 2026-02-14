@@ -4,6 +4,7 @@ import { ChatAPI } from "../api/ChatAPI";
 import type { ChatThreadDetailDTO } from "../dtos/ChatThreadDetailDTO";
 import { useNavigate } from "react-router-dom";
 import { observer } from "mobx-react-lite";
+import { useStores } from "../hooks/useStores";
 
 /**
  * Displays a button allowing for creating a new ChatThread. Once the thread is created,
@@ -11,11 +12,12 @@ import { observer } from "mobx-react-lite";
  */
 export const NewThreadButton = observer(() => {
   const [isPending, startTransition] = useTransition();
+  const { chatThreadStore } = useStores();
   const navigate = useNavigate();
 
   const handleNewThreadButton = () => {
     startTransition(async () => {
-      const resp: ChatThreadDetailDTO | undefined = await ChatAPI.createNewChatThread("New Thread");
+      const resp: ChatThreadDetailDTO | undefined = await chatThreadStore.createNewChatThread("New Thread");
 
       if (resp) {
         navigate(`/chat/${resp.id}`);

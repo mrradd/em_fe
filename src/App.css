@@ -1,0 +1,4 @@
+div.selected_thread {
+  border-color: #39d353;
+  box-shadow: 0 0 6px #39d353, 0 0 14px rgba(57, 211, 83, 0.75);
+}

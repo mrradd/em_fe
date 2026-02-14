@@ -2,6 +2,7 @@ import axios from "axios";
 import type { ChatThreadDTO } from "../dtos/ChatThreadDTO";
 import type { ChatThreadDetailDTO } from "../dtos/ChatThreadDetailDTO";
 import type { ChatDTO } from "../dtos/ChatDTO";
+import type { UpdateChatThreadRequestDTO } from "../dtos/UpdateChatThreadRequestDTO";
 
 const apiUrl = `${import.meta.env.VITE_API_BASE_URL}/api/v1`;
 
@@ -54,6 +55,26 @@ export class ChatAPI {
     }
   }
 
+  static async updateThread(updateThreadDTO: UpdateChatThreadRequestDTO): Promise<ChatThreadDTO | undefined> {
+    try {
+      const resp = await axios.patch(
+        `${apiUrl}/chat/thread/update`,
+        updateThreadDTO,
+      );
+
+      if (resp.status !== 200) {
+        console.warn(`editThread: code ${resp.status}`);
+        return undefined;
+      }
+
+      return resp.data.data;
+    }
+    catch (err: any) {
+      console.error(err.message)
+      return undefined;
+    }
+  }
+
   /**
    * Calls the API to fetch all chat threads.
    * @returns The list of chat threads, or `undefined` if the request fails.
@@ -77,6 +98,11 @@ export class ChatAPI {
     }
   }
 
+  /**
+   * Calls the API to fetch full details for a single chat thread.
+   * @param threadId The ID of the chat thread to fetch.
+   * @returns The chat thread details, or `undefined` if the request fails.
+   */
   static async getThreadDetails(threadId: string): Promise<ChatThreadDetailDTO | undefined> {
     try {
       const resp = await axios.get(

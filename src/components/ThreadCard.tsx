@@ -5,6 +5,8 @@ import { observer } from "mobx-react-lite";
 import { DeleteThreadModal } from "./DeleteThreadModal";
 import { useDisclosure } from "@mantine/hooks";
 import { EditThreadModal } from "./EditThreadModal";
+import { useStores } from "../hooks/useStores";
+import { useEffect, useState } from "react";
 
 type ThreadCardProps = {
   id: string, //uuid
@@ -13,12 +15,20 @@ type ThreadCardProps = {
 };
 
 /**
- * Displays the name, created date, and control buttons for a single thread in a card form.
+ * Displays the name, created date, and control buttons for a single thread in a card form. When the
+ * Chat Thread is 'viewed', its color changes.
  */
 export const ThreadCard = observer(({ id, name, createdTimestamp }: ThreadCardProps) => {
+  const { chatThreadStore } = useStores();
+  const [isSelected, setIsSelected] = useState(false);
   const navigate = useNavigate();
   const [deleteModalOpened, deleteModalhandlers] = useDisclosure(false);
   const [editModalOpened, editModalhandlers] = useDisclosure(false);
+
+  useEffect(() => {
+    console.log("herp derp");
+    setIsSelected(chatThreadStore.selectedThreadId === id);
+  }, [chatThreadStore.selectedThreadId, id]);
 
   const deletePressed = () => {
     deleteModalhandlers.open();
@@ -37,6 +47,7 @@ export const ThreadCard = observer(({ id, name, createdTimestamp }: ThreadCardPr
   };
 
   const viewPressed = () => {
+    chatThreadStore.setSelectedThreadId(id);
     navigate(`/chat/${id}`);
   };
 
@@ -45,7 +56,7 @@ export const ThreadCard = observer(({ id, name, createdTimestamp }: ThreadCardPr
       <EditThreadModal threadId={id} isOpened={editModalOpened} onClose={editModalOnClose} name={name} />
       <DeleteThreadModal threadId={id} isOpened={deleteModalOpened} onClose={deleteModalOnClose} name={name} />
 
-      <Card shadow="sm" padding="lg" radius="md" withBorder>
+      <Card className={isSelected ? "selected_thread" : ""} shadow="sm" padding="lg" radius="md" withBorder>
         <Card.Section>
           <Flex
             mih={10}

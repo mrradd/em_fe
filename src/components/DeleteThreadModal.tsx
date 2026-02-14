@@ -1,7 +1,6 @@
 import { Button, Group, Loader, Modal, Space, Text } from "@mantine/core";
 import { observer } from "mobx-react-lite";
 import { useTransition } from "react";
-import { ChatAPI } from "../api/ChatAPI";
 import { useStores } from "../hooks/useStores";
 import { useNavigate } from "react-router-dom";
 
@@ -24,11 +23,9 @@ export const DeleteThreadModal = observer(({ name, threadId, isOpened, onClose }
 
   const confirmPressed = () => {
     confirmTransition(async () => {
-      const isDeleted: boolean = await ChatAPI.deleteThread(threadId);
+      const isDeleted: boolean = await chatThreadStore.deleteThreadById(threadId);
 
       if (isDeleted) {
-        await chatThreadStore.fetchThreadList();
-
         /** TODO CH  NAVIGATE TO THE HOME PAGE AFTER DELETION. THIS IS TEMPORARY UNTIL I FIND A BETTER SOLUTION.
             CHECK IF WE ARE ON THE PAGE OF THE CHAT BEING DELETED. IF SO, NAVIGATE AWAY, ELSE DO NOTHING. */
         navigate("/");
@@ -46,7 +43,7 @@ export const DeleteThreadModal = observer(({ name, threadId, isOpened, onClose }
 
   return (
     <Modal opened={isOpened} onClose={onClose} title={`Delete Thread "${name}"`} centered>
-      {isPending && <Loader color="red" />}
+      {isPending && <Loader color="blue" />}
       <Text>Are you sure you want to delete "{name}"?</Text>
       <Space h="lg" />
       <Group grow>

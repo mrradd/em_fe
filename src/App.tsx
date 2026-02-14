@@ -48,7 +48,7 @@ export const App = observer(() => {
         <Divider />
         <Space h="sm" />
 
-        <Stack style={{ overflow: "auto" }}>
+        <Stack style={{ overflow: "auto", padding: "5px" }}>
           <ThreadList />
         </Stack>
         <Space h="sm" />
