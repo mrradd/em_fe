@@ -7,6 +7,7 @@ import { Home } from "./pages/Home";
 import { ChatPage } from "./pages/ChatPage";
 import { NewThreadButton } from "./components/NewThreadButton";
 import { useStores } from "./hooks/useStores";
+import { ModelSelector } from "./components/ModelSelector";
 
 /**
  * The main entry point for the application.
@@ -39,6 +40,7 @@ export const App = observer(() => {
       <AppShell.Navbar>
         <Space h="sm" />
         <Stack style={{ marginLeft: "10px", marginRight: "10px" }}>
+          <ModelSelector />
           <Button onClick={() => { navigate("/") }}>Home</Button>
           <NewThreadButton />
         </Stack>

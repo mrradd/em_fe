@@ -53,7 +53,7 @@ function reducer(state: ChatPageState, action: any) {
  * text area shrink/grow with the window dimenstions.
  */
 export const ChatPage = observer(() => {
-  const { uiStore } = useStores();
+  const { uiStore, modelStore } = useStores();
   const [state, dispatch] = useReducer(reducer, initialState);
   const [isPending, startTransition] = useTransition();
   const [isSendPending, startSendTransition] = useTransition();
@@ -158,7 +158,7 @@ export const ChatPage = observer(() => {
       dispatch({ type: "appendChats", chats: [userChat] });
       dispatch({ type: "updateTextValue", textValue: "" });
 
-      const resp: ChatDTO | undefined = await ChatAPI.sendChatRequest(state.textValue, state.chatThread.id);
+      const resp: ChatDTO | undefined = await ChatAPI.sendChatRequest(state.textValue, state.chatThread.id, modelStore.selectedModel);
 
       if (resp) {
         dispatch({ type: "appendChats", chats: [resp] });
