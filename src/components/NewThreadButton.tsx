@@ -17,8 +17,8 @@ export const NewThreadButton = observer(() => {
   const handleNewThreadButton = () => {
     startTransition(async () => {
       const resp: ChatThreadDetailDTO | undefined = await chatThreadStore.createNewChatThread("New Thread");
-
       if (resp) {
+        chatThreadStore.setSelectedThreadId(resp.id);
         navigate(`/chat/${resp.id}`);
       }
       else {
