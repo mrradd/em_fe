@@ -4,11 +4,9 @@ import type { ChatThreadDetailDTO } from "../dtos/ChatThreadDetailDTO";
 import type { ChatDTO } from "../dtos/ChatDTO";
 import type { UpdateChatThreadRequestDTO } from "../dtos/UpdateChatThreadRequestDTO";
 import type { GetModelsResponseDTO } from "../dtos/GetModelsResponseDTO";
-
-const apiUrl = `${import.meta.env.VITE_API_BASE_URL}/api/v1`;
+import { API_URL } from "../utils/RadConsts";
 
 export class ChatAPI {
-
   /**
    * Calls the API to create a new chat thread with the provided thread name.
    * @param newThreadName The name to assign to the new chat thread.
@@ -17,7 +15,7 @@ export class ChatAPI {
   static async createNewChatThread(newThreadName: string): Promise<ChatThreadDetailDTO | undefined> {
     try {
       const resp = await axios.post(
-        `${apiUrl}/chat/thread/create`, {
+        `${API_URL}/chat/thread/create`, {
         threadName: newThreadName,
       });
 
@@ -41,7 +39,7 @@ export class ChatAPI {
    */
   static async deleteThread(threadId: string): Promise<boolean> {
     try {
-      const resp = await axios.delete(`${apiUrl}/chat/thread/${threadId}`);
+      const resp = await axios.delete(`${API_URL}/chat/thread/${threadId}`);
 
       if (resp.status !== 200) {
         console.warn(`deleteThread: code ${resp.status}`);
@@ -62,7 +60,7 @@ export class ChatAPI {
    */
   static async getAvailableModels(): Promise<GetModelsResponseDTO | undefined> {
     try {
-      const resp = await axios.get(`${apiUrl}/chat/model/list`);
+      const resp = await axios.get(`${API_URL}/chat/model/list`);
 
       if (resp.status !== 200) {
         console.warn(`getAvailableModels: code ${resp.status}`);
@@ -85,7 +83,7 @@ export class ChatAPI {
   static async getThreadDetails(threadId: string): Promise<ChatThreadDetailDTO | undefined> {
     try {
       const resp = await axios.get(
-        `${apiUrl}/chat/thread/${threadId}/detail`
+        `${API_URL}/chat/thread/${threadId}/detail`
       );
 
       if (resp.status !== 200) {
@@ -108,7 +106,7 @@ export class ChatAPI {
   static async getThreadList(): Promise<ChatThreadDTO[] | undefined> {
     try {
       const resp = await axios.get(
-        `${apiUrl}/chat/thread/all`
+        `${API_URL}/chat/thread/all`
       );
 
       if (resp.status !== 200) {
@@ -134,7 +132,7 @@ export class ChatAPI {
   static async sendChatRequest(message: string, threadId: string, model: string): Promise<ChatDTO | undefined> {
     try {
       const resp = await axios.post(
-        `${apiUrl}/chat/send`, {
+        `${API_URL}/chat/send`, {
         message: message,
         threadId: threadId,
         model: model,
@@ -161,7 +159,7 @@ export class ChatAPI {
   static async updateThread(updateThreadDTO: UpdateChatThreadRequestDTO): Promise<ChatThreadDTO | undefined> {
     try {
       const resp = await axios.patch(
-        `${apiUrl}/chat/thread/update`,
+        `${API_URL}/chat/thread/update`,
         updateThreadDTO,
       );
 
