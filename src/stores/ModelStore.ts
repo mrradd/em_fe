@@ -10,6 +10,9 @@ export class ModelStore {
     makeAutoObservable(this);
   }
 
+  /**
+   * Get all available LLM models.
+   */
   async fetchModels() {
     const resp: GetModelsResponseDTO | undefined = await ChatAPI.getAvailableModels();
 

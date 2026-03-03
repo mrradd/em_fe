@@ -1,10 +1,10 @@
 import { observer } from "mobx-react-lite";
 import { useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState, useTransition } from "react";
 import { useParams } from "react-router-dom";
-import type { ChatThreadDetailDTO } from "../dtos/ChatThreadDetailDTO";
+import type { ChatThreadDetailDTO } from "../dtos/chat/ChatThreadDetailDTO";
 import { ChatAPI } from "../api/ChatAPI";
 import { ChatCard } from "../components/ChatCard";
-import type { ChatDTO } from "../dtos/ChatDTO";
+import type { ChatDTO } from "../dtos/chat/ChatDTO";
 import { Affix, Button, Stack, Text, Textarea, useMantineTheme } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { useStores } from "../hooks/useStores";

@@ -1,9 +1,9 @@
 import { makeAutoObservable } from "mobx";
 import type { ChatThread } from "../models/ChatThread";
 import { ChatAPI } from "../api/ChatAPI";
-import type { ChatThreadDTO } from "../dtos/ChatThreadDTO";
-import type { ChatThreadDetailDTO } from "../dtos/ChatThreadDetailDTO";
-import type { UpdateChatThreadRequestDTO } from "../dtos/UpdateChatThreadRequestDTO";
+import type { ChatThreadDTO } from "../dtos/chat/ChatThreadDTO";
+import type { ChatThreadDetailDTO } from "../dtos/chat/ChatThreadDetailDTO";
+import type { UpdateChatThreadRequestDTO } from "../dtos/chat/UpdateChatThreadRequestDTO";
 
 export class ChatThreadStore {
   threadList = [] as ChatThread[];

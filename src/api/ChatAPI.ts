@@ -1,8 +1,8 @@
 import axios from "axios";
-import type { ChatThreadDTO } from "../dtos/ChatThreadDTO";
-import type { ChatThreadDetailDTO } from "../dtos/ChatThreadDetailDTO";
-import type { ChatDTO } from "../dtos/ChatDTO";
-import type { UpdateChatThreadRequestDTO } from "../dtos/UpdateChatThreadRequestDTO";
+import type { ChatThreadDTO } from "../dtos/chat/ChatThreadDTO";
+import type { ChatThreadDetailDTO } from "../dtos/chat/ChatThreadDetailDTO";
+import type { ChatDTO } from "../dtos/chat/ChatDTO";
+import type { UpdateChatThreadRequestDTO } from "../dtos/chat/UpdateChatThreadRequestDTO";
 import type { GetModelsResponseDTO } from "../dtos/GetModelsResponseDTO";
 import { API_URL } from "../utils/RadConsts";
 
