@@ -21,7 +21,7 @@ export const ThreadList = observer(() => {
     const list = Array.isArray(chatThreadStore.threadList) ? chatThreadStore.threadList : [];
 
     if (isPending) {
-      return <Text>...Loading...</Text>
+      return <Text>...Loading threads...</Text>
     }
 
     return list.map((val) => (

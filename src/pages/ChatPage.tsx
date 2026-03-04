@@ -123,7 +123,7 @@ export const ChatPage = observer(() => {
 
   const renderChatList = () => {
     if (isPending) {
-      return <Text>...LOADING...</Text>
+      return <Text>...Loading chats...</Text>
     }
 
     if (state.chatThread?.chats?.length === 0) {

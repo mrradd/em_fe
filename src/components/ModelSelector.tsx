@@ -14,11 +14,11 @@ export const ModelSelector = observer(() => {
     startTransition(async () => {
       await modelStore.fetchModels();
     });
-  }, [modelStore, modelStore.models, modelStore.models.length]);
+  }, [modelStore]);
 
   return (
     <div>
-      {isPending && <Text>...Loading...</Text>}
+      {isPending && <Text>...Loading models...</Text>}
       <NativeSelect
         value={modelStore.selectedModel}
         onChange={(event) => modelStore.setSelectedModel(event.currentTarget.value)}
