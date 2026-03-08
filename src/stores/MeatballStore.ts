@@ -2,7 +2,7 @@ import { makeAutoObservable } from "mobx";
 import type { Meatball } from "../models/Meatball";
 import { MeatballAPI } from "../api/MeatballAPI";
 import type { GetAllMeatballsResponseDTO } from "../dtos/meatball/GetAllMeatballsResponseDTO";
-import { toMeatball } from "../dtos/meatball/MeatballDTO";
+import { toMeatball, type MeatballDTO } from "../dtos/meatball/MeatballDTO";
 
 export class MeatballStore {
   meatballList = [] as Meatball[];
@@ -33,9 +33,11 @@ export class MeatballStore {
     const meatballDtos: GetAllMeatballsResponseDTO | undefined = await MeatballAPI.getAllMeatballs();
 
     if (meatballDtos?.meatballs) {
-      meatballDtos.meatballs.forEach((dto) => {
-        this.insertMeatball(toMeatball(dto));
+      const meatballs = meatballDtos.meatballs.map((dto: MeatballDTO) => {
+        return toMeatball(dto)
       });
+
+      this.setMeatballList(meatballs);
     }
   }
 
@@ -43,7 +45,7 @@ export class MeatballStore {
     this.meatballList = this.meatballList.concat(meatball);
   }
 
-  setThreadList(meatball: Meatball[]) {
+  setMeatballList(meatball: Meatball[]) {
     this.meatballList = meatball;
   }
 

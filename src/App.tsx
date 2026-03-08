@@ -43,10 +43,12 @@ export const App = observer(() => {
           <ModelSelector />
           <Button onClick={() => { navigate("/") }}>Home</Button>
           <NewThreadButton />
+          <Button onClick={() => { navigate("/") }}>Meatballs</Button>
         </Stack>
 
         <Space h="sm" />
         <Divider />
+        <Text>Threads</Text>
         <Space h="sm" />
 
         <Stack style={{ overflow: "auto", padding: "5px" }}>
