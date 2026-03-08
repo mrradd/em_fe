@@ -1,37 +1,37 @@
 import { Stack, Text } from "@mantine/core";
-import { ThreadCard } from "./ThreadCard";
 import { useEffect, useTransition } from "react";
 import { observer } from "mobx-react-lite";
 import { useStores } from "../hooks/useStores";
+import { MeatballCard } from "./MeatballCard";
 
 /**
  * Retrieves a list of Chat Threads from the store and displays them.
  */
-export const ThreadList = observer(() => {
-  const { chatThreadStore } = useStores();
+export const MeatballList = observer(() => {
+  const { meatballStore } = useStores();
   const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
     startTransition(async () => {
-      await chatThreadStore.fetchThreadList();
+      await meatballStore.fetchMeatballs();
     });
-  }, [chatThreadStore]);
+  }, [meatballStore]);
 
-  const renderThreads = () => {
-    const list = chatThreadStore?.threadList ?? [];
+  const renderMeatballs = () => {
+    const list = meatballStore?.meatballList ?? [];
 
     if (isPending) {
-      return <Text>...Loading threads...</Text>
+      return <Text>...Loading meatballs...</Text>
     }
 
     return list.map((val) => (
-      <ThreadCard key={val.id} name={val.name} id={val.id} createdTimestamp={val.createdTimestamp} />
+      <MeatballCard key={val.id} name={val.name} id={val.id} />
     ));
   };
 
   return (
     <Stack>
-      {renderThreads()}
+      {renderMeatballs()}
     </Stack>
   );
 });
