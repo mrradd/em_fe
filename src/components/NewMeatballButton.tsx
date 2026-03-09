@@ -21,7 +21,7 @@ export const NewThreadButton = observer(() => {
 
   const renderButton = () => {
     if (isPending) {
-      return <Text>...Loading meatball...</Text>
+      return <Text>...Creating meatball...</Text>
     }
 
     return <Button onClick={handleNewMeatballButton}>New Meatball</Button>;

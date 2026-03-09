@@ -29,7 +29,7 @@ export const NewThreadButton = observer(() => {
 
   const renderButton = () => {
     if (isPending) {
-      return <Text>...Loading thread...</Text>
+      return <Text>...Creating thread...</Text>
     }
 
     return <Button onClick={handleNewThreadButton}>New Thread</Button>;
