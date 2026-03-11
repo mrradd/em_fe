@@ -5,7 +5,7 @@ import type { ChatThreadDetailDTO } from "../dtos/chat/ChatThreadDetailDTO";
 import { ChatAPI } from "../api/ChatAPI";
 import { ChatCard } from "../components/ChatCard";
 import type { ChatDTO } from "../dtos/chat/ChatDTO";
-import { Affix, Button, Stack, Text, Textarea, useMantineTheme } from "@mantine/core";
+import { Affix, Box, Button, Container, Stack, Text, Textarea, useMantineTheme } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { useStores } from "../hooks/useStores";
 

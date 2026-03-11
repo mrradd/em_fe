@@ -30,7 +30,7 @@ export const MeatballList = observer(() => {
   };
 
   return (
-    <Stack>
+    <Stack style={{ width: "25%" }} >
       {renderMeatballs()}
     </Stack>
   );

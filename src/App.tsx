@@ -8,6 +8,7 @@ import { ChatPage } from "./pages/ChatPage";
 import { NewThreadButton } from "./components/NewThreadButton";
 import { useStores } from "./hooks/useStores";
 import { ModelSelector } from "./components/ModelSelector";
+import { MeatballsPage } from "./pages/MeatballsPage";
 
 /**
  * The main entry point for the application.
@@ -43,7 +44,7 @@ export const App = observer(() => {
           <ModelSelector />
           <Button onClick={() => { navigate("/") }}>Home</Button>
           <NewThreadButton />
-          <Button onClick={() => { navigate("/") }}>Meatballs</Button>
+          <Button onClick={() => { navigate("/meatballs") }}>Meatballs</Button>
         </Stack>
 
         <Space h="sm" />
@@ -61,6 +62,7 @@ export const App = observer(() => {
         <Routes>
           <Route path="/" element={<Home />}></Route>
           <Route path="/chat/:threadId" element={<ChatPage />}></Route>
+          <Route path="/meatballs" element={<MeatballsPage />}></Route>
         </Routes>
       </AppShell.Main>
     </AppShell >
