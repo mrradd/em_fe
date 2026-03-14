@@ -1,4 +1,4 @@
-import { Stack, Text } from "@mantine/core";
+import { Container, Stack, Text } from "@mantine/core";
 import { useEffect, useTransition } from "react";
 import { observer } from "mobx-react-lite";
 import { useStores } from "../hooks/useStores";
@@ -30,7 +30,7 @@ export const MeatballList = observer(() => {
   };
 
   return (
-    <Stack style={{ width: "25%" }} >
+    <Stack style={{ minWidth: "25%", width: "25%", overflowY: "scroll", height: "85vh", padding: "10px"}} >
       {renderMeatballs()}
     </Stack>
   );

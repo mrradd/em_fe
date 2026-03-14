@@ -39,7 +39,7 @@ export const MeatballCard = observer(({ id, name }: MeatballCardProps) => {
 
   const viewPressed = () => {
     meatballStore.setSelectedThreadId(id);
-    navigate(`/meatball/${id}`);
+    navigate(`/meatballs/${id}`);
   };
 
   return (
@@ -51,7 +51,7 @@ export const MeatballCard = observer(({ id, name }: MeatballCardProps) => {
         deleteFn={doDeletion}
         name={name} />
 
-      <Card className={isSelected ? "selected_meatball" : ""} shadow="sm" padding="lg" radius="md" withBorder>
+      <Card className={isSelected ? "selected_meatball" : ""} shadow="sm" padding="lg" radius="md" withBorder style={{minHeight: "80px"}}>
         <Card.Section>
           <Flex
             mih={10}

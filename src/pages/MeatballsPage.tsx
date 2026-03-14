@@ -2,7 +2,8 @@ import { observer } from "mobx-react-lite";
 import { useStores } from "../hooks/useStores";
 import { useEffect, useTransition } from "react";
 import { MeatballList } from "../components/MeatballList";
-import { Box, Container, Flex, Title } from "@mantine/core";
+import { Box, Container, Flex, Group, Title } from "@mantine/core";
+import { NewMeatballButton } from "../components/NewMeatballButton";
 
 
 export const MeatballsPage = observer(() => {
@@ -11,7 +12,11 @@ export const MeatballsPage = observer(() => {
 
   return (
     <>
-      <Title>Meatballs</Title>
+      <Group>
+        <Title>Meatballs</Title>
+        <NewMeatballButton/>
+      </Group>
+      
       <Flex mih={80}
         gap="md"
         justify="flex-start"
@@ -19,7 +24,6 @@ export const MeatballsPage = observer(() => {
         direction="row"
         wrap="wrap">
         <MeatballList />
-
 
         <div>
           herp derp

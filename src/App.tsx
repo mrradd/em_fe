@@ -63,6 +63,7 @@ export const App = observer(() => {
           <Route path="/" element={<Home />}></Route>
           <Route path="/chat/:threadId" element={<ChatPage />}></Route>
           <Route path="/meatballs" element={<MeatballsPage />}></Route>
+          <Route path="/meatballs/:id" element={<MeatballsPage />}></Route>
         </Routes>
       </AppShell.Main>
     </AppShell >

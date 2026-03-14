@@ -3,6 +3,7 @@ import type { Meatball } from "../models/Meatball";
 import { MeatballAPI } from "../api/MeatballAPI";
 import type { GetAllMeatballsResponseDTO } from "../dtos/meatball/GetAllMeatballsResponseDTO";
 import { toMeatball, type MeatballDTO } from "../dtos/meatball/MeatballDTO";
+import type { CreateMeatballRequestDTO } from "../dtos/meatball/CreateMeatballRequestDTO";
 
 export class MeatballStore {
   meatballList = [] as Meatball[];
@@ -10,6 +11,19 @@ export class MeatballStore {
 
   constructor() {
     makeAutoObservable(this);
+  }
+
+  async createMeatball(name: string) {
+    const resp: MeatballDTO | undefined = await MeatballAPI.createMeatball(
+      {
+        name: name
+      } as CreateMeatballRequestDTO
+    );
+
+    if (resp) {
+      this.setMeatballList(this.meatballList.concat(toMeatball(resp)));
+      this.selectedMeatballId = resp.id;
+    }
   }
 
   /**
