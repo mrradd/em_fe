@@ -4,6 +4,8 @@ import { MeatballAPI } from "../api/MeatballAPI";
 import type { GetAllMeatballsResponseDTO } from "../dtos/meatball/GetAllMeatballsResponseDTO";
 import { toMeatball, type MeatballDTO } from "../dtos/meatball/MeatballDTO";
 import type { CreateMeatballRequestDTO } from "../dtos/meatball/CreateMeatballRequestDTO";
+import type { UpdateMeatballRequestDTO } from "../dtos/meatball/UpdateMeatballRequestDTO";
+import type { UpdateMeatballResponseDTO } from "../dtos/meatball/UpdateMeatballResponseDTO";
 
 export class MeatballStore {
   meatballList = [] as Meatball[];
@@ -75,6 +77,20 @@ export class MeatballStore {
 
       this.setMeatballList(meatballs);
     }
+  }
+
+  /**
+   * Updates a meatball by id with any provided field values.
+   *
+   * @param id The id of the meatball to update.
+   * @param name The updated meatball name.
+   * @param description The updated meatball description.
+   * @param instructions The updated meatball instructions.
+   * @returns The updated meatball response DTO, if the request succeeds.
+   */
+  async updateMeatball(id: string, name?: string, description?: string, instructions?: string): Promise<UpdateMeatballResponseDTO | undefined> {
+    const dto: UpdateMeatballResponseDTO | undefined = await MeatballAPI.updateMeatball({ id, name, description, instructions } as UpdateMeatballRequestDTO);
+    return dto;
   }
 
   insertMeatball(meatball: Meatball) {

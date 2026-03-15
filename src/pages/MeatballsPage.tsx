@@ -1,9 +1,7 @@
 import { observer } from "mobx-react-lite";
 import { useStores } from "../hooks/useStores";
-import { useEffect, useReducer, useTransition } from "react";
-import { MeatballList } from "../components/MeatballList";
-import { Box, Button, Container, Fieldset, Flex, Group, Stack, Textarea, TextInput, Title } from "@mantine/core";
-import { NewMeatballButton } from "../components/NewMeatballButton";
+import { useEffect, useReducer, useRef, useTransition } from "react";
+import { Text, Button, Container, Fieldset, Stack, Textarea, TextInput } from "@mantine/core";
 import { useParams } from "react-router-dom";
 import type { Meatball } from "../models/Meatball";
 
@@ -34,7 +32,7 @@ function reducer(state: MeatballsPageState, action: any) {
     case "setInstructions":
       return {
         ...state,
-        description: action.instructions,
+        instructions: action.instructions,
       }
     default:
       console.log(`Reducer action '${action}' is not valid.`);
@@ -42,14 +40,20 @@ function reducer(state: MeatballsPageState, action: any) {
   }
 }
 
+/**
+ * Allows the user to view and edit details about a single Meatball. Details
+ * such as name, description, and instructions.
+ */
 export const MeatballsPage = observer(() => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const params = useParams();
   const { meatballStore } = useStores();
-  const [isPending, startTransition] = useTransition();
+  const [isGettingMeatballPending, startGetMeatballTransition] = useTransition();
+  const [isSavePending, startSaveTransition] = useTransition();
+  const ogMeatball = useRef({} as Partial<Meatball>);
 
   useEffect(() => {
-    startTransition(async () => {
+    startGetMeatballTransition(async () => {
       let meatball: Meatball | undefined;
 
       if (params.id) {
@@ -57,8 +61,10 @@ export const MeatballsPage = observer(() => {
 
         if (meatball) {
           dispatch({ type: "setName", name: meatball.name });
-          dispatch({ type: "setDescription", name: meatball.name });
-          dispatch({ type: "setInstructions", name: meatball.name });
+          dispatch({ type: "setDescription", description: meatball.description });
+          dispatch({ type: "setInstructions", instructions: meatball.instructions });
+
+          ogMeatball.current = meatball;
         }
         else {
           alert("Meatball not found.");
@@ -68,24 +74,64 @@ export const MeatballsPage = observer(() => {
         alert("No ID given to retrieve Meatball.");
       }
     });
-  }, [params.id]);
+  }, [meatballStore, params.id]);
+
+  const handleCancel = () => {
+    dispatch({ type: "setName", name: ogMeatball.current.name });
+    dispatch({ type: "setDescription", description: ogMeatball.current.description });
+    dispatch({ type: "setInstructions", instructions: ogMeatball.current.instructions });
+  };
+
+  const handleSave = async () => {
+    await startSaveTransition(async () => {
+      const resp = await meatballStore.updateMeatball(params.id!, state.name, state.description, state.instructions);
+
+      if (!resp) {
+        alert("Save unsuccessful.");
+      }
+      else {
+        //HACK Refresh the meatball list.
+        await meatballStore.fetchMeatballs();
+        alert("Save successful.");
+      }
+    });
+  };
+
+  if (isGettingMeatballPending) {
+    return (
+      <>
+        <Text>...Loading {state.name}...</Text>
+      </>
+    );
+  }
+
+  if (isSavePending) {
+    return (
+      <>
+        <Text>...Saving changes...</Text>
+      </>
+    );
+  }
 
   return (
     <>
       <Container>
         <Fieldset>
           <Stack>
-            <TextInput label="Meatball Name" value={state.name} />
-            <TextInput label="Description" value={state.description} />
-            <Textarea label="Instructions" value={state.instructions} rows={5} onChange={(e) => {
-
+            <TextInput label="Meatball Name" value={state.name} onChange={(e) => {
+              dispatch({ type: "setName", name: e.target.value });
             }} />
-            <Button>Save</Button>
+            <TextInput label="Description" value={state.description} onChange={(e) => {
+              dispatch({ type: "setDescription", description: e.target.value });
+            }} />
+            <Textarea label="Instructions" value={state.instructions} rows={5} onChange={(e) => {
+              dispatch({ type: "setInstructions", instructions: e.target.value });
+            }} />
+            <Button onClick={handleSave}>Save</Button>
+            <Button onClick={handleCancel}>Cancel</Button>
           </Stack>
         </Fieldset>
-
       </Container>
-
     </>
   );
 });
