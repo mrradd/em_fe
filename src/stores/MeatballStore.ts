@@ -13,6 +13,11 @@ export class MeatballStore {
     makeAutoObservable(this);
   }
 
+  /**
+   * Creates a meatball via the API and appends it to the store when creation succeeds.
+   * @param name The display name for the new meatball.
+   * @returns A promise that resolves when the create request completes.
+   */
   async createMeatball(name: string) {
     const resp: MeatballDTO | undefined = await MeatballAPI.createMeatball(
       {
@@ -22,7 +27,6 @@ export class MeatballStore {
 
     if (resp) {
       this.setMeatballList(this.meatballList.concat(toMeatball(resp)));
-      this.selectedMeatballId = resp.id;
     }
   }
 
@@ -31,7 +35,7 @@ export class MeatballStore {
    * @param meatballId The meatball id to delete.
    * @returns True when the delete succeeds; otherwise false.
    */
-  async deleteThreadById(meatballId: string): Promise<boolean> {
+  async deleteMeatballById(meatballId: string): Promise<boolean> {
     const success: boolean = await MeatballAPI.deleteMeatball(meatballId);
 
     if (success) {
@@ -43,6 +47,24 @@ export class MeatballStore {
     return success;
   }
 
+  /**
+   * Fetches a Meatball by its ID from the API.
+   * @param id Meatball ID to get data for.
+   * @returns Meatball on success or undefined otherwise.
+   */
+  async fetchMeatballById(id: string): Promise<Meatball | undefined> {
+    const dto: MeatballDTO | undefined = await MeatballAPI.getMeatballDetails(id);
+
+    if (dto) {
+      return toMeatball(dto);
+    }
+
+    return undefined;
+  }
+
+  /**
+   * Gets all Meatballs via the API and populates the meatball list with the returned data.
+   */
   async fetchMeatballs() {
     const meatballDtos: GetAllMeatballsResponseDTO | undefined = await MeatballAPI.getAllMeatballs();
 
@@ -63,7 +85,7 @@ export class MeatballStore {
     this.meatballList = meatball;
   }
 
-  setSelectedThreadId(meatballId: string) {
+  setSelectedMeatballId(meatballId: string) {
     this.selectedMeatballId = meatballId;
   }
 }

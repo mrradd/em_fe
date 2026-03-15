@@ -7,6 +7,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { EditThreadModal } from "./EditThreadModal";
 import { useStores } from "../hooks/useStores";
 import { useEffect, useState } from "react";
+import { useUiHook } from "../hooks/useUiHook";
 
 type ThreadCardProps = {
   id: string, //uuid
@@ -24,6 +25,7 @@ export const ThreadCard = observer(({ id, name, createdTimestamp }: ThreadCardPr
   const navigate = useNavigate();
   const [deleteModalOpened, deleteModalhandlers] = useDisclosure(false);
   const [editModalOpened, editModalhandlers] = useDisclosure(false);
+  const { resetAllSelectedIds } = useUiHook();
 
   useEffect(() => {
     console.log("herp derp");
@@ -47,6 +49,7 @@ export const ThreadCard = observer(({ id, name, createdTimestamp }: ThreadCardPr
   };
 
   const viewPressed = () => {
+    resetAllSelectedIds();
     chatThreadStore.setSelectedThreadId(id);
     navigate(`/chat/${id}`);
   };

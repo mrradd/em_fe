@@ -5,6 +5,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { useStores } from "../hooks/useStores";
 import { useEffect, useState } from "react";
 import { DeleteModal } from "./DeleteModal";
+import { useUiHook } from "../hooks/useUiHook";
 
 type MeatballCardProps = {
   id: string, //uuid
@@ -20,6 +21,7 @@ export const MeatballCard = observer(({ id, name }: MeatballCardProps) => {
   const [isSelected, setIsSelected] = useState(false);
   const navigate = useNavigate();
   const [deleteModalOpened, deleteModalhandlers] = useDisclosure(false);
+  const { resetAllSelectedIds } = useUiHook();
 
   useEffect(() => {
     setIsSelected(meatballStore.selectedMeatballId === id);
@@ -34,11 +36,12 @@ export const MeatballCard = observer(({ id, name }: MeatballCardProps) => {
   };
 
   const doDeletion = async (): Promise<boolean> => {
-    return await meatballStore.deleteThreadById(id);
+    return await meatballStore.deleteMeatballById(id);
   };
 
   const viewPressed = () => {
-    meatballStore.setSelectedThreadId(id);
+    resetAllSelectedIds();
+    meatballStore.setSelectedMeatballId(id);
     navigate(`/meatballs/${id}`);
   };
 
@@ -51,7 +54,7 @@ export const MeatballCard = observer(({ id, name }: MeatballCardProps) => {
         deleteFn={doDeletion}
         name={name} />
 
-      <Card className={isSelected ? "selected_meatball" : ""} shadow="sm" padding="lg" radius="md" withBorder style={{minHeight: "80px"}}>
+      <Card className={isSelected ? "selected_meatball" : ""} shadow="sm" padding="lg" radius="md" withBorder style={{ minHeight: "80px" }}>
         <Card.Section>
           <Flex
             mih={10}

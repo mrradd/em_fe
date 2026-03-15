@@ -30,7 +30,7 @@ export const MeatballList = observer(() => {
   };
 
   return (
-    <Stack style={{ minWidth: "25%", width: "25%", overflowY: "scroll", height: "85vh", padding: "10px"}} >
+    <Stack style={{ overflowY: "scroll", height: "25vh", padding: "10px" }} >
       {renderMeatballs()}
     </Stack>
   );

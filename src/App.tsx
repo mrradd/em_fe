@@ -9,6 +9,9 @@ import { NewThreadButton } from "./components/NewThreadButton";
 import { useStores } from "./hooks/useStores";
 import { ModelSelector } from "./components/ModelSelector";
 import { MeatballsPage } from "./pages/MeatballsPage";
+import { useUiHook } from "./hooks/useUiHook";
+import { MeatballList } from "./components/MeatballList";
+import { NewMeatballButton } from "./components/NewMeatballButton";
 
 /**
  * The main entry point for the application.
@@ -16,6 +19,7 @@ import { MeatballsPage } from "./pages/MeatballsPage";
 export const App = observer(() => {
   const navigate = useNavigate();
   const { uiStore } = useStores();
+  const { resetAllSelectedIds } = useUiHook();
 
   return (
     <AppShell
@@ -42,12 +46,20 @@ export const App = observer(() => {
         <Space h="sm" />
         <Stack style={{ marginLeft: "10px", marginRight: "10px" }}>
           <ModelSelector />
-          <Button onClick={() => { navigate("/") }}>Home</Button>
+          <Button onClick={() => {
+            resetAllSelectedIds();
+            navigate("/");
+          }}>Home</Button>
           <NewThreadButton />
-          <Button onClick={() => { navigate("/meatballs") }}>Meatballs</Button>
+          <NewMeatballButton />
         </Stack>
 
         <Space h="sm" />
+        <Divider />
+        <Text>Meatballs</Text>
+        <Space h="sm" />
+        <MeatballList />
+
         <Divider />
         <Text>Threads</Text>
         <Space h="sm" />
