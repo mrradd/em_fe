@@ -90,7 +90,7 @@ export const MeatballsPage = observer(() => {
         alert("Save unsuccessful.");
       }
       else {
-        //HACK Refresh the meatball list.
+        //HACK Refresh the meatball list. Maybe instead of fetch just update the object already in the Meatball list in the store.
         await meatballStore.fetchMeatballs();
         alert("Save successful.");
       }
