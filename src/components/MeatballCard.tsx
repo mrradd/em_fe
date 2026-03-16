@@ -42,7 +42,7 @@ export const MeatballCard = observer(({ id, name }: MeatballCardProps) => {
   const viewPressed = () => {
     resetAllSelectedIds();
     meatballStore.setSelectedMeatballId(id);
-    navigate(`/meatballs/${id}`);
+    navigate(`meatball/${id}`);
   };
 
   return (

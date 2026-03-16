@@ -6,6 +6,7 @@ import { toMeatball, type MeatballDTO } from "../dtos/meatball/MeatballDTO";
 import type { CreateMeatballRequestDTO } from "../dtos/meatball/CreateMeatballRequestDTO";
 import type { UpdateMeatballRequestDTO } from "../dtos/meatball/UpdateMeatballRequestDTO";
 import type { UpdateMeatballResponseDTO } from "../dtos/meatball/UpdateMeatballResponseDTO";
+import { isNumberLike } from "@mantine/core";
 
 export class MeatballStore {
   meatballList = [] as Meatball[];
@@ -20,7 +21,7 @@ export class MeatballStore {
    * @param name The display name for the new meatball.
    * @returns A promise that resolves when the create request completes.
    */
-  async createMeatball(name: string) {
+  async createMeatball(name: string): Promise<Meatball | undefined> {
     const resp: MeatballDTO | undefined = await MeatballAPI.createMeatball(
       {
         name: name
@@ -28,8 +29,12 @@ export class MeatballStore {
     );
 
     if (resp) {
-      this.setMeatballList(this.meatballList.concat(toMeatball(resp)));
+      const meatball: Meatball = toMeatball(resp);
+      this.setMeatballList(this.meatballList.concat(meatball));
+      return meatball;
     }
+
+    return undefined;
   }
 
   /**
@@ -88,9 +93,14 @@ export class MeatballStore {
    * @param instructions The updated meatball instructions.
    * @returns The updated meatball response DTO, if the request succeeds.
    */
-  async updateMeatball(id: string, name?: string, description?: string, instructions?: string): Promise<UpdateMeatballResponseDTO | undefined> {
+  async updateMeatball(id: string, name?: string, description?: string, instructions?: string): Promise<Meatball | undefined> {
     const dto: UpdateMeatballResponseDTO | undefined = await MeatballAPI.updateMeatball({ id, name, description, instructions } as UpdateMeatballRequestDTO);
-    return dto;
+
+    if (dto) {
+      return this.findAndUpdateMeatball(dto);
+    }
+
+    return undefined;
   }
 
   insertMeatball(meatball: Meatball) {
@@ -99,6 +109,25 @@ export class MeatballStore {
 
   setMeatballList(meatball: Meatball[]) {
     this.meatballList = meatball;
+  }
+
+  findAndUpdateMeatball({ id, name, description, instructions }: UpdateMeatballResponseDTO): Meatball | undefined {
+    const index = this.meatballList.findIndex((mb) => { return mb.id === id });
+
+    if (!index) {
+      return undefined;
+    }
+
+    const meatball = { ...this.meatballList[index] };
+
+    this.meatballList[index] = {
+      ...meatball,
+      name: name ?? meatball.name,
+      description: description ?? meatball.description,
+      instructions: instructions ?? meatball.instructions,
+    } as Meatball;
+
+    return this.meatballList[index];
   }
 
   setSelectedMeatballId(meatballId: string) {

@@ -2,8 +2,9 @@ import { observer } from "mobx-react-lite";
 import { useStores } from "../hooks/useStores";
 import { useEffect, useReducer, useRef, useTransition } from "react";
 import { Text, Button, Container, Fieldset, Stack, Textarea, TextInput } from "@mantine/core";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import type { Meatball } from "../models/Meatball";
+import type { UpdateMeatballResponseDTO } from "../dtos/meatball/UpdateMeatballResponseDTO";
 
 type MeatballsPageState = {
   name: string,
@@ -50,7 +51,8 @@ export const MeatballsPage = observer(() => {
   const { meatballStore } = useStores();
   const [isGettingMeatballPending, startGetMeatballTransition] = useTransition();
   const [isSavePending, startSaveTransition] = useTransition();
-  const ogMeatball = useRef({} as Partial<Meatball>);
+  const cleanMeatball = useRef({} as Partial<Meatball>);
+  const navigate = useNavigate();
 
   useEffect(() => {
     startGetMeatballTransition(async () => {
@@ -64,7 +66,7 @@ export const MeatballsPage = observer(() => {
           dispatch({ type: "setDescription", description: meatball.description });
           dispatch({ type: "setInstructions", instructions: meatball.instructions });
 
-          ogMeatball.current = meatball;
+          cleanMeatball.current = meatball;
         }
         else {
           alert("Meatball not found.");
@@ -77,22 +79,21 @@ export const MeatballsPage = observer(() => {
   }, [meatballStore, params.id]);
 
   const handleCancel = () => {
-    dispatch({ type: "setName", name: ogMeatball.current.name });
-    dispatch({ type: "setDescription", description: ogMeatball.current.description });
-    dispatch({ type: "setInstructions", instructions: ogMeatball.current.instructions });
+    dispatch({ type: "setName", name: cleanMeatball.current.name });
+    dispatch({ type: "setDescription", description: cleanMeatball.current.description });
+    dispatch({ type: "setInstructions", instructions: cleanMeatball.current.instructions });
   };
 
   const handleSave = async () => {
-    await startSaveTransition(async () => {
-      const resp = await meatballStore.updateMeatball(params.id!, state.name, state.description, state.instructions);
+    startSaveTransition(async () => {
+      const resp: Meatball | undefined = await meatballStore.updateMeatball(params.id!, state.name, state.description, state.instructions);
 
       if (!resp) {
         alert("Save unsuccessful.");
       }
       else {
-        //HACK Refresh the meatball list. Maybe instead of fetch just update the object already in the Meatball list in the store.
-        await meatballStore.fetchMeatballs();
         alert("Save successful.");
+        navigate(`meatball/${params.id}`);
       }
     });
   };
