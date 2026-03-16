@@ -132,7 +132,7 @@ export const MeatballsPage = observer(() => {
             <TextInput label="Description" value={state.description} onChange={(e) => {
               dispatch({ type: "setDescription", description: e.target.value });
             }} />
-            <Textarea label="Instructions" value={state.instructions} rows={5} onChange={(e) => {
+            <Textarea label="Instructions" value={state.instructions} rows={20} onChange={(e) => {
               dispatch({ type: "setInstructions", instructions: e.target.value });
             }} />
             <Button onClick={handleSave}>Save</Button>
