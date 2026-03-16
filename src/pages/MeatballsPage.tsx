@@ -2,7 +2,7 @@ import { observer } from "mobx-react-lite";
 import { useStores } from "../hooks/useStores";
 import { useEffect, useReducer, useRef, useTransition } from "react";
 import { Text, Button, Container, Fieldset, Stack, Textarea, TextInput } from "@mantine/core";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import type { Meatball } from "../models/Meatball";
 
 type MeatballsPageState = {
