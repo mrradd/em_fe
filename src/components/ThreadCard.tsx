@@ -28,7 +28,6 @@ export const ThreadCard = observer(({ id, name, createdTimestamp }: ThreadCardPr
   const { resetAllSelectedIds } = useUiHook();
 
   useEffect(() => {
-    console.log("herp derp");
     setIsSelected(chatThreadStore.selectedThreadId === id);
   }, [chatThreadStore.selectedThreadId, id]);
 

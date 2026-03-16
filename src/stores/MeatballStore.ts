@@ -6,7 +6,6 @@ import { toMeatball, type MeatballDTO } from "../dtos/meatball/MeatballDTO";
 import type { CreateMeatballRequestDTO } from "../dtos/meatball/CreateMeatballRequestDTO";
 import type { UpdateMeatballRequestDTO } from "../dtos/meatball/UpdateMeatballRequestDTO";
 import type { UpdateMeatballResponseDTO } from "../dtos/meatball/UpdateMeatballResponseDTO";
-import { isNumberLike } from "@mantine/core";
 
 export class MeatballStore {
   meatballList = [] as Meatball[];
@@ -103,34 +102,51 @@ export class MeatballStore {
     return undefined;
   }
 
+  /**
+   * Updates an existing meatball in the local store with the fields returned by
+   * the update response.
+   *
+   * @param id The identifier of the meatball to update.
+   * @param name The updated meatball name, if provided.
+   * @param description The updated meatball description, if provided.
+   * @param instructions The updated meatball instructions, if provided.
+   * @returns The updated meatball from the local store, or `undefined` if no
+   * matching meatball is found.
+   */
+  findAndUpdateMeatball({ id, name, description, instructions }: UpdateMeatballResponseDTO): Meatball | undefined {
+    const index = this.meatballList.findIndex((mb) => { return mb.id === id });
+
+    if (index < 0) {
+      console.warn("findAndUpdateMeatball: No match found.");
+      return undefined;
+    }
+
+    const meatball = { ...this.meatballList[index] };
+
+    this.setMeatballAtIndex(index, {
+      ...meatball,
+      name: name ?? meatball.name,
+      description: description ?? meatball.description,
+      instructions: instructions ?? meatball.instructions,
+    } as Meatball);
+
+    return this.meatballList[index];
+  }
+
   insertMeatball(meatball: Meatball) {
     this.meatballList = this.meatballList.concat(meatball);
+  }
+
+  setMeatballAtIndex(index: number, meatball: Meatball) {
+    this.meatballList[index] = meatball;
   }
 
   setMeatballList(meatball: Meatball[]) {
     this.meatballList = meatball;
   }
 
-  findAndUpdateMeatball({ id, name, description, instructions }: UpdateMeatballResponseDTO): Meatball | undefined {
-    const index = this.meatballList.findIndex((mb) => { return mb.id === id });
-
-    if (!index) {
-      return undefined;
-    }
-
-    const meatball = { ...this.meatballList[index] };
-
-    this.meatballList[index] = {
-      ...meatball,
-      name: name ?? meatball.name,
-      description: description ?? meatball.description,
-      instructions: instructions ?? meatball.instructions,
-    } as Meatball;
-
-    return this.meatballList[index];
-  }
-
   setSelectedMeatballId(meatballId: string) {
     this.selectedMeatballId = meatballId;
   }
+
 }

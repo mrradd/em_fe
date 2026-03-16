@@ -61,14 +61,15 @@ export class ChatThreadStore {
     const threadDtos: ChatThreadDTO[] | undefined = await ChatAPI.getThreadList();
 
     if (threadDtos) {
-      const threads = threadDtos.map((thread: ChatThreadDTO) => {
+      const threads: ChatThread[] = threadDtos.map((thread: ChatThreadDTO) => {
         return {
           id: thread.id,
           name: thread.name,
           createdTimestamp: thread.createdTimestamp,
+          meatballId: thread.meatballId,
           chats: [],
         };
-      });
+      })
 
       this.setThreadList(threads);
     }

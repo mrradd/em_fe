@@ -4,7 +4,6 @@ import { useEffect, useReducer, useRef, useTransition } from "react";
 import { Text, Button, Container, Fieldset, Stack, Textarea, TextInput } from "@mantine/core";
 import { useNavigate, useParams } from "react-router-dom";
 import type { Meatball } from "../models/Meatball";
-import type { UpdateMeatballResponseDTO } from "../dtos/meatball/UpdateMeatballResponseDTO";
 
 type MeatballsPageState = {
   name: string,
@@ -15,7 +14,7 @@ type MeatballsPageState = {
 const initialState: MeatballsPageState = {
   name: "",
   description: "",
-  instructions: ""
+  instructions: "",
 }
 
 function reducer(state: MeatballsPageState, action: any) {
@@ -35,6 +34,11 @@ function reducer(state: MeatballsPageState, action: any) {
         ...state,
         instructions: action.instructions,
       }
+    case "setPreviousMeatball":
+      return {
+        ...state,
+        previousMeatball: action.previousMeatball,
+      }
     default:
       console.log(`Reducer action '${action}' is not valid.`);
       return state;
@@ -51,10 +55,13 @@ export const MeatballsPage = observer(() => {
   const { meatballStore } = useStores();
   const [isGettingMeatballPending, startGetMeatballTransition] = useTransition();
   const [isSavePending, startSaveTransition] = useTransition();
-  const cleanMeatball = useRef({} as Partial<Meatball>);
-  const navigate = useNavigate();
+  const prevMeatballRef = useRef({} as Meatball);
 
   useEffect(() => {
+    doThing();
+  }, [params.id]);
+
+  const doThing = () => {
     startGetMeatballTransition(async () => {
       let meatball: Meatball | undefined;
 
@@ -65,8 +72,7 @@ export const MeatballsPage = observer(() => {
           dispatch({ type: "setName", name: meatball.name });
           dispatch({ type: "setDescription", description: meatball.description });
           dispatch({ type: "setInstructions", instructions: meatball.instructions });
-
-          cleanMeatball.current = meatball;
+          prevMeatballRef.current = meatball;
         }
         else {
           alert("Meatball not found.");
@@ -76,12 +82,12 @@ export const MeatballsPage = observer(() => {
         alert("No ID given to retrieve Meatball.");
       }
     });
-  }, [meatballStore, params.id]);
+  }
 
   const handleCancel = () => {
-    dispatch({ type: "setName", name: cleanMeatball.current.name });
-    dispatch({ type: "setDescription", description: cleanMeatball.current.description });
-    dispatch({ type: "setInstructions", instructions: cleanMeatball.current.instructions });
+    dispatch({ type: "setName", name: prevMeatballRef.current.name });
+    dispatch({ type: "setDescription", description: prevMeatballRef.current.description });
+    dispatch({ type: "setInstructions", instructions: prevMeatballRef.current.instructions });
   };
 
   const handleSave = async () => {
@@ -93,7 +99,8 @@ export const MeatballsPage = observer(() => {
       }
       else {
         alert("Save successful.");
-        navigate(`meatball/${params.id}`);
+        await meatballStore.fetchMeatballs();
+        doThing();
       }
     });
   };
