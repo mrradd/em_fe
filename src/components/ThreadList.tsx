@@ -25,7 +25,7 @@ export const ThreadList = observer(() => {
     }
 
     return list.map((val) => (
-      <ThreadCard key={val.id} name={val.name} id={val.id} createdTimestamp={val.createdTimestamp} />
+      <ThreadCard key={val.id} meatballId={val.meatballId ?? ""} name={val.name} id={val.id} createdTimestamp={val.createdTimestamp} />
     ));
   };
 

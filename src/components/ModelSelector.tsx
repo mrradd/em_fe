@@ -21,7 +21,7 @@ export const ModelSelector = observer(() => {
       {isPending && <Text>...Loading models...</Text>}
       <NativeSelect
         value={modelStore.selectedModel}
-        onChange={(event) => modelStore.setSelectedModel(event.currentTarget.value)}
+        onChange={(event) => modelStore.setSelectedModel(event.target.value)}
         data={modelStore.models}
       />
     </div>

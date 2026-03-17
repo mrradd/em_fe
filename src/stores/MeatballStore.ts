@@ -137,6 +137,12 @@ export class MeatballStore {
     this.meatballList = this.meatballList.concat(meatball);
   }
 
+  getMeatballByID(meatballId: string) {
+    return this.meatballList.find((mb) => {
+      return mb.id === meatballId;
+    });
+  }
+
   setMeatballAtIndex(index: number, meatball: Meatball) {
     this.meatballList[index] = meatball;
   }

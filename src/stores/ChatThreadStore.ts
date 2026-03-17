@@ -79,12 +79,14 @@ export class ChatThreadStore {
    * Sends an update request for a thread and updates the matching thread in the store.
    * @param threadId The id of the thread to update.
    * @param newName The new name to apply to the thread.
+   * @param newMeatballId The ID of the new meatball to assign.
    * @returns The updated thread if the request succeeds; otherwise `undefined`.
    */
-  async updateThread(threadId: string, newName: string): Promise<ChatThread | undefined> {
+  async updateThread(threadId: string, newName: string, newMeatballId: string): Promise<ChatThread | undefined> {
     const updatedThread: ChatThreadDTO | undefined = await ChatAPI.updateThread({
       id: threadId,
       newThreadName: newName,
+      newMeatballId: newMeatballId,
     } as UpdateChatThreadRequestDTO);
 
     if (!updatedThread) {
@@ -112,7 +114,7 @@ export class ChatThreadStore {
 
     if (updatedIndex !== -1 && updatedStoreThread) {
       tempThreadList[updatedIndex] = updatedStoreThread;
-      this.threadList = tempThreadList;
+      this.setThreadList(tempThreadList);
     }
 
     return updatedStoreThread;
