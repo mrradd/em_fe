@@ -8,17 +8,26 @@ type EditThreadModalProps = {
   meatballId: string,
   isOpened: boolean,
   name: string,
+  modelName: string,
   onClose: () => void,
 };
 
 /**
  * Modal that allows for editing data about the thread, initially just the name.
  */
-export const EditThreadModal = observer(({ threadId, meatballId, name, isOpened, onClose }: EditThreadModalProps) => {
+export const EditThreadModal = observer(({ threadId, meatballId, name, isOpened, modelName, onClose }: EditThreadModalProps) => {
   const [newName, setNewName] = useState(name ?? "");
+  const [selectedModelName, setSelectedModelName] = useState(modelName);
   const [selectedMeatballIndex, setSelectedMeatballIndex] = useState(0);
-  const [isPending, confirmTransition] = useTransition();
-  const { chatThreadStore, meatballStore } = useStores();
+  const [isPending, saveTransition] = useTransition();
+  const { chatThreadStore, modelStore, meatballStore } = useStores();
+  const [isModelPending, modelTransition] = useTransition();
+
+  useEffect(() => {
+    modelTransition(async () => {
+      await modelStore.fetchModels();
+    });
+  }, [modelStore]);
 
   useEffect(() => {
     console.log(meatballId);
@@ -45,11 +54,13 @@ export const EditThreadModal = observer(({ threadId, meatballId, name, isOpened,
   };
 
   const confirmPressed = () => {
-    confirmTransition(async () => {
+    saveTransition(async () => {
+      //TODO CH. UPDATE FOR MODEL SELECTION
       await chatThreadStore.updateThread(
         threadId,
         newName,
         selectedMeatballIndex > -1 ? meatballStore.meatballList[selectedMeatballIndex].id : "",
+        selectedModelName
       );
 
       onClose();
@@ -58,13 +69,20 @@ export const EditThreadModal = observer(({ threadId, meatballId, name, isOpened,
 
   return (
     <Modal opened={isOpened} onClose={onClose} title={`Edit '${name}'`} centered>
-      {isPending && <Loader color="blue" />}
+      {(isPending || isModelPending) && <Loader color="blue" />}
       <TextInput
         value={newName}
         label="New Name"
         onChange={(e) => setNewName(e.currentTarget.value)}
       />
-      <Space h="lg" />
+      <Space h="sm" />
+      <NativeSelect
+        label="Model"
+        value={selectedModelName}
+        onChange={(event) => setSelectedModelName(event.target.value)}
+        data={modelStore.models}
+      />
+      <Space h="sm" />
       <NativeSelect
         label="Meatball"
         value={selectedMeatballIndex}

@@ -5,5 +5,6 @@ export type ChatThread = {
   name: string,
   createdTimestamp: number, //in ms.
   meatballId?: string, //uuid
+  modelName: string,
   chats: Chat[],
 }

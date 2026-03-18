@@ -12,14 +12,19 @@ import { MeatballsPage } from "./pages/MeatballsPage";
 import { useUiHook } from "./hooks/useUiHook";
 import { MeatballList } from "./components/MeatballList";
 import { NewMeatballButton } from "./components/NewMeatballButton";
+import { useEffect } from "react";
 
 /**
  * The main entry point for the application.
  */
 export const App = observer(() => {
   const navigate = useNavigate();
-  const { uiStore } = useStores();
+  const { uiStore, modelStore } = useStores();
   const { resetAllSelectedIds } = useUiHook();
+
+  useEffect(() => {
+    modelStore.fetchModels();
+  }, []);
 
   return (
     <AppShell
@@ -45,7 +50,6 @@ export const App = observer(() => {
       <AppShell.Navbar>
         <Space h="sm" />
         <Stack style={{ marginLeft: "10px", marginRight: "10px" }}>
-          <ModelSelector />
           <Button onClick={() => {
             resetAllSelectedIds();
             navigate("/");

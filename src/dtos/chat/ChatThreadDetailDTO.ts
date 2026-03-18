@@ -5,5 +5,6 @@ export type ChatThreadDetailDTO = {
   name: string,
   createdTimestamp: number, //in ms.
   meatballId: string, //uuid
+  modelName: string, //Name of the LLM model to use.
   chats: ChatDTO[],
 }

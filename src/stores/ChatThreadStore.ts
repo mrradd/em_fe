@@ -16,16 +16,18 @@ export class ChatThreadStore {
   /**
    * Calls the API to create a new chat thread by name and inserts it into the store.
    * @param newThreadName The name for the new chat thread.
+   * @param modelName The name of the model to chat with.
    * @returns The new Chat Thread on success or `undefined` otherwise.
    */
-  async createNewChatThread(newThreadName: string): Promise<ChatThread | undefined> {
-    const resp: ChatThreadDetailDTO | undefined = await ChatAPI.createNewChatThread(newThreadName);
+  async createNewChatThread(newThreadName: string, modelName: string): Promise<ChatThread | undefined> {
+    const resp: ChatThreadDetailDTO | undefined = await ChatAPI.createNewChatThread(newThreadName, modelName);
 
     if (resp) {
       const newChatThread = {
         id: resp?.id,
         name: resp?.name,
         chats: resp?.chats,
+        modelName: resp?.modelName,
         createdTimestamp: resp?.createdTimestamp,
       } as ChatThread;
 
@@ -67,6 +69,7 @@ export class ChatThreadStore {
           name: thread.name,
           createdTimestamp: thread.createdTimestamp,
           meatballId: thread.meatballId,
+          modelName: thread.modelName,
           chats: [],
         };
       })
@@ -80,13 +83,15 @@ export class ChatThreadStore {
    * @param threadId The id of the thread to update.
    * @param newName The new name to apply to the thread.
    * @param newMeatballId The ID of the new meatball to assign.
+   * @param newModelName New name of the model to chat with.
    * @returns The updated thread if the request succeeds; otherwise `undefined`.
    */
-  async updateThread(threadId: string, newName: string, newMeatballId: string): Promise<ChatThread | undefined> {
+  async updateThread(threadId: string, newName: string, newMeatballId: string, newModelName: string): Promise<ChatThread | undefined> {
     const updatedThread: ChatThreadDTO | undefined = await ChatAPI.updateThread({
       id: threadId,
       newThreadName: newName,
       newMeatballId: newMeatballId,
+      modelName: newModelName,
     } as UpdateChatThreadRequestDTO);
 
     if (!updatedThread) {
@@ -106,6 +111,8 @@ export class ChatThreadStore {
       updatedStoreThread = {
         ...thread,
         name: updatedThread.name,
+        modelName: updatedThread.modelName,
+        meatballId: updatedThread.meatballId,
       };
 
       updatedIndex = i;

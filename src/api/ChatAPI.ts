@@ -12,11 +12,12 @@ export class ChatAPI {
    * @param newThreadName The name to assign to the new chat thread.
    * @returns The created chat thread details, or `undefined` if the request fails.
    */
-  static async createNewChatThread(newThreadName: string): Promise<ChatThreadDetailDTO | undefined> {
+  static async createNewChatThread(newThreadName: string, modelName: string): Promise<ChatThreadDetailDTO | undefined> {
     try {
       const resp = await axios.post(
         `${API_URL}/chat/thread/create`, {
         threadName: newThreadName,
+        modelName: modelName,
       });
 
       if (resp.status !== 200) {
