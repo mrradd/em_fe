@@ -1,23 +1,23 @@
 import axios from "axios";
-import type { ChatThreadDTO } from "../dtos/ChatThreadDTO";
-import type { ChatThreadDetailDTO } from "../dtos/ChatThreadDetailDTO";
-import type { ChatDTO } from "../dtos/ChatDTO";
-import type { UpdateChatThreadRequestDTO } from "../dtos/UpdateChatThreadRequestDTO";
-
-const apiUrl = `${import.meta.env.VITE_API_BASE_URL}/api/v1`;
+import type { ChatThreadDTO } from "../dtos/chat/ChatThreadDTO";
+import type { ChatThreadDetailDTO } from "../dtos/chat/ChatThreadDetailDTO";
+import type { ChatDTO } from "../dtos/chat/ChatDTO";
+import type { UpdateChatThreadRequestDTO } from "../dtos/chat/UpdateChatThreadRequestDTO";
+import type { GetModelsResponseDTO } from "../dtos/GetModelsResponseDTO";
+import { API_URL } from "../utils/RadConsts";
 
 export class ChatAPI {
-
   /**
    * Calls the API to create a new chat thread with the provided thread name.
    * @param newThreadName The name to assign to the new chat thread.
    * @returns The created chat thread details, or `undefined` if the request fails.
    */
-  static async createNewChatThread(newThreadName: string): Promise<ChatThreadDetailDTO | undefined> {
+  static async createNewChatThread(newThreadName: string, modelName: string): Promise<ChatThreadDetailDTO | undefined> {
     try {
       const resp = await axios.post(
-        `${apiUrl}/chat/thread/create`, {
+        `${API_URL}/chat/thread/create`, {
         threadName: newThreadName,
+        modelName: modelName,
       });
 
       if (resp.status !== 200) {
@@ -40,7 +40,7 @@ export class ChatAPI {
    */
   static async deleteThread(threadId: string): Promise<boolean> {
     try {
-      const resp = await axios.delete(`${apiUrl}/chat/thread/${threadId}`);
+      const resp = await axios.delete(`${API_URL}/chat/thread/${threadId}`);
 
       if (resp.status !== 200) {
         console.warn(`deleteThread: code ${resp.status}`);
@@ -55,15 +55,40 @@ export class ChatAPI {
     }
   }
 
-  static async updateThread(updateThreadDTO: UpdateChatThreadRequestDTO): Promise<ChatThreadDTO | undefined> {
+  /**
+   * Calls the API to fetch a list of available LLM models to use for chats.
+   * @returns The list of models, or `undefined` if the request fails.
+   */
+  static async getAvailableModels(): Promise<GetModelsResponseDTO | undefined> {
     try {
-      const resp = await axios.patch(
-        `${apiUrl}/chat/thread/update`,
-        updateThreadDTO,
+      const resp = await axios.get(`${API_URL}/chat/model/list`);
+
+      if (resp.status !== 200) {
+        console.warn(`getAvailableModels: code ${resp.status}`);
+        return undefined;
+      }
+
+      return resp.data.data;
+    }
+    catch (err: any) {
+      console.error(err.message)
+      return undefined;
+    }
+  }
+
+  /**
+   * Calls the API to fetch full details for a single chat thread.
+   * @param threadId The ID of the chat thread to fetch.
+   * @returns The chat thread details, or `undefined` if the request fails.
+   */
+  static async getThreadDetails(threadId: string): Promise<ChatThreadDetailDTO | undefined> {
+    try {
+      const resp = await axios.get(
+        `${API_URL}/chat/thread/${threadId}/detail`
       );
 
       if (resp.status !== 200) {
-        console.warn(`editThread: code ${resp.status}`);
+        console.warn(`getThreadDetails: code ${resp.status}`);
         return undefined;
       }
 
@@ -82,7 +107,7 @@ export class ChatAPI {
   static async getThreadList(): Promise<ChatThreadDTO[] | undefined> {
     try {
       const resp = await axios.get(
-        `${apiUrl}/chat/thread/all`
+        `${API_URL}/chat/thread/all`
       );
 
       if (resp.status !== 200) {
@@ -99,41 +124,19 @@ export class ChatAPI {
   }
 
   /**
-   * Calls the API to fetch full details for a single chat thread.
-   * @param threadId The ID of the chat thread to fetch.
-   * @returns The chat thread details, or `undefined` if the request fails.
-   */
-  static async getThreadDetails(threadId: string): Promise<ChatThreadDetailDTO | undefined> {
-    try {
-      const resp = await axios.get(
-        `${apiUrl}/chat/thread/${threadId}/detail`
-      );
-
-      if (resp.status !== 200) {
-        console.warn(`getThreadDetails: code ${resp.status}`);
-        return undefined;
-      }
-
-      return resp.data.data;
-    }
-    catch (err: any) {
-      console.error(err.message)
-      return undefined;
-    }
-  }
-
-  /**
    * Calls the API to send a chat message for the given thread.
    * @param message The message content to send.
    * @param threadId The ID of the chat thread to send the message to.
+   * @param model The name of the model to use for the chat request.
    * @returns The LLM response to the sent message, or `undefined` if the request fails.
    */
-  static async sendChatRequest(message: string, threadId: string): Promise<ChatDTO | undefined> {
+  static async sendChatRequest(message: string, threadId: string, model: string): Promise<ChatDTO | undefined> {
     try {
       const resp = await axios.post(
-        `${apiUrl}/chat/send`, {
+        `${API_URL}/chat/send`, {
         message: message,
         threadId: threadId,
+        model: model,
       });
 
       if (resp.status !== 200) {
@@ -147,5 +150,30 @@ export class ChatAPI {
       console.error(err.message)
       return undefined;
     }
-  };
+  }
+
+  /**
+   * Calls the API to update an existing chat thread.
+   * @param updateThreadDTO The update payload for the chat thread.
+   * @returns The updated chat thread, or `undefined` if the request fails.
+   */
+  static async updateThread(updateThreadDTO: UpdateChatThreadRequestDTO): Promise<ChatThreadDTO | undefined> {
+    try {
+      const resp = await axios.patch(
+        `${API_URL}/chat/thread/update`,
+        updateThreadDTO,
+      );
+
+      if (resp.status !== 200) {
+        console.warn(`editThread: code ${resp.status}`);
+        return undefined;
+      }
+
+      return resp.data.data;
+    }
+    catch (err: any) {
+      console.error(err.message)
+      return undefined;
+    }
+  }
 }

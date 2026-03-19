@@ -7,13 +7,24 @@ import { Home } from "./pages/Home";
 import { ChatPage } from "./pages/ChatPage";
 import { NewThreadButton } from "./components/NewThreadButton";
 import { useStores } from "./hooks/useStores";
+import { ModelSelector } from "./components/ModelSelector";
+import { MeatballsPage } from "./pages/MeatballsPage";
+import { useUiHook } from "./hooks/useUiHook";
+import { MeatballList } from "./components/MeatballList";
+import { NewMeatballButton } from "./components/NewMeatballButton";
+import { useEffect } from "react";
 
 /**
  * The main entry point for the application.
  */
 export const App = observer(() => {
   const navigate = useNavigate();
-  const { uiStore } = useStores();
+  const { uiStore, modelStore } = useStores();
+  const { resetAllSelectedIds } = useUiHook();
+
+  useEffect(() => {
+    modelStore.fetchModels();
+  }, []);
 
   return (
     <AppShell
@@ -39,12 +50,22 @@ export const App = observer(() => {
       <AppShell.Navbar>
         <Space h="sm" />
         <Stack style={{ marginLeft: "10px", marginRight: "10px" }}>
-          <Button onClick={() => { navigate("/") }}>Home</Button>
+          <Button onClick={() => {
+            resetAllSelectedIds();
+            navigate("/");
+          }}>Home</Button>
           <NewThreadButton />
+          <NewMeatballButton />
         </Stack>
 
         <Space h="sm" />
         <Divider />
+        <Text>Meatballs</Text>
+        <Space h="sm" />
+        <MeatballList />
+
+        <Divider />
+        <Text>Threads</Text>
         <Space h="sm" />
 
         <Stack style={{ overflow: "auto", padding: "5px" }}>
@@ -57,6 +78,8 @@ export const App = observer(() => {
         <Routes>
           <Route path="/" element={<Home />}></Route>
           <Route path="/chat/:threadId" element={<ChatPage />}></Route>
+          <Route path="/meatball" element={<MeatballsPage />}></Route>
+          <Route path="/meatball/:id" element={<MeatballsPage />}></Route>
         </Routes>
       </AppShell.Main>
     </AppShell >

@@ -1,9 +1,9 @@
 import { makeAutoObservable } from "mobx";
 import type { ChatThread } from "../models/ChatThread";
 import { ChatAPI } from "../api/ChatAPI";
-import type { ChatThreadDTO } from "../dtos/ChatThreadDTO";
-import type { ChatThreadDetailDTO } from "../dtos/ChatThreadDetailDTO";
-import type { UpdateChatThreadRequestDTO } from "../dtos/UpdateChatThreadRequestDTO";
+import type { ChatThreadDTO } from "../dtos/chat/ChatThreadDTO";
+import type { ChatThreadDetailDTO } from "../dtos/chat/ChatThreadDetailDTO";
+import type { UpdateChatThreadRequestDTO } from "../dtos/chat/UpdateChatThreadRequestDTO";
 
 export class ChatThreadStore {
   threadList = [] as ChatThread[];
@@ -16,16 +16,18 @@ export class ChatThreadStore {
   /**
    * Calls the API to create a new chat thread by name and inserts it into the store.
    * @param newThreadName The name for the new chat thread.
+   * @param modelName The name of the model to chat with.
    * @returns The new Chat Thread on success or `undefined` otherwise.
    */
-  async createNewChatThread(newThreadName: string): Promise<ChatThread | undefined> {
-    const resp: ChatThreadDetailDTO | undefined = await ChatAPI.createNewChatThread(newThreadName);
+  async createNewChatThread(newThreadName: string, modelName: string): Promise<ChatThread | undefined> {
+    const resp: ChatThreadDetailDTO | undefined = await ChatAPI.createNewChatThread(newThreadName, modelName);
 
     if (resp) {
       const newChatThread = {
         id: resp?.id,
         name: resp?.name,
         chats: resp?.chats,
+        modelName: resp?.modelName,
         createdTimestamp: resp?.createdTimestamp,
       } as ChatThread;
 
@@ -61,14 +63,16 @@ export class ChatThreadStore {
     const threadDtos: ChatThreadDTO[] | undefined = await ChatAPI.getThreadList();
 
     if (threadDtos) {
-      const threads = threadDtos.map((thread: ChatThreadDTO) => {
+      const threads: ChatThread[] = threadDtos.map((thread: ChatThreadDTO) => {
         return {
           id: thread.id,
           name: thread.name,
           createdTimestamp: thread.createdTimestamp,
+          meatballId: thread.meatballId,
+          modelName: thread.modelName,
           chats: [],
         };
-      });
+      })
 
       this.setThreadList(threads);
     }
@@ -78,12 +82,16 @@ export class ChatThreadStore {
    * Sends an update request for a thread and updates the matching thread in the store.
    * @param threadId The id of the thread to update.
    * @param newName The new name to apply to the thread.
+   * @param newMeatballId The ID of the new meatball to assign.
+   * @param newModelName New name of the model to chat with.
    * @returns The updated thread if the request succeeds; otherwise `undefined`.
    */
-  async updateThread(threadId: string, newName: string): Promise<ChatThread | undefined> {
+  async updateThread(threadId: string, newName: string, newMeatballId: string, newModelName: string): Promise<ChatThread | undefined> {
     const updatedThread: ChatThreadDTO | undefined = await ChatAPI.updateThread({
       id: threadId,
       newThreadName: newName,
+      newMeatballId: newMeatballId,
+      modelName: newModelName,
     } as UpdateChatThreadRequestDTO);
 
     if (!updatedThread) {
@@ -103,6 +111,8 @@ export class ChatThreadStore {
       updatedStoreThread = {
         ...thread,
         name: updatedThread.name,
+        modelName: updatedThread.modelName,
+        meatballId: updatedThread.meatballId,
       };
 
       updatedIndex = i;
@@ -111,7 +121,7 @@ export class ChatThreadStore {
 
     if (updatedIndex !== -1 && updatedStoreThread) {
       tempThreadList[updatedIndex] = updatedStoreThread;
-      this.threadList = tempThreadList;
+      this.setThreadList(tempThreadList);
     }
 
     return updatedStoreThread;

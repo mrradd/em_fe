@@ -1,10 +1,10 @@
 import { observer } from "mobx-react-lite";
 import { useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState, useTransition } from "react";
 import { useParams } from "react-router-dom";
-import type { ChatThreadDetailDTO } from "../dtos/ChatThreadDetailDTO";
+import type { ChatThreadDetailDTO } from "../dtos/chat/ChatThreadDetailDTO";
 import { ChatAPI } from "../api/ChatAPI";
 import { ChatCard } from "../components/ChatCard";
-import type { ChatDTO } from "../dtos/ChatDTO";
+import type { ChatDTO } from "../dtos/chat/ChatDTO";
 import { Affix, Button, Stack, Text, Textarea, useMantineTheme } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { useStores } from "../hooks/useStores";
@@ -53,7 +53,7 @@ function reducer(state: ChatPageState, action: any) {
  * text area shrink/grow with the window dimenstions.
  */
 export const ChatPage = observer(() => {
-  const { uiStore } = useStores();
+  const { uiStore, modelStore } = useStores();
   const [state, dispatch] = useReducer(reducer, initialState);
   const [isPending, startTransition] = useTransition();
   const [isSendPending, startSendTransition] = useTransition();
@@ -123,7 +123,7 @@ export const ChatPage = observer(() => {
 
   const renderChatList = () => {
     if (isPending) {
-      return <Text>...LOADING...</Text>
+      return <Text>...Loading chats...</Text>
     }
 
     if (state.chatThread?.chats?.length === 0) {
@@ -158,7 +158,7 @@ export const ChatPage = observer(() => {
       dispatch({ type: "appendChats", chats: [userChat] });
       dispatch({ type: "updateTextValue", textValue: "" });
 
-      const resp: ChatDTO | undefined = await ChatAPI.sendChatRequest(state.textValue, state.chatThread.id);
+      const resp: ChatDTO | undefined = await ChatAPI.sendChatRequest(state.textValue, state.chatThread.id, modelStore.selectedModel);
 
       if (resp) {
         dispatch({ type: "appendChats", chats: [resp] });

@@ -18,14 +18,19 @@ export const ThreadList = observer(() => {
   }, [chatThreadStore]);
 
   const renderThreads = () => {
-    const list = Array.isArray(chatThreadStore.threadList) ? chatThreadStore.threadList : [];
+    const list = chatThreadStore?.threadList ?? [];
 
     if (isPending) {
-      return <Text>...Loading...</Text>
+      return <Text>...Loading threads...</Text>
     }
 
     return list.map((val) => (
-      <ThreadCard key={val.id} name={val.name} id={val.id} createdTimestamp={val.createdTimestamp} />
+      <ThreadCard
+        key={val.id} meatballId={val.meatballId ?? ""}
+        name={val.name}
+        id={val.id}
+        modelName={val.modelName}
+        createdTimestamp={val.createdTimestamp} />
     ));
   };
 
