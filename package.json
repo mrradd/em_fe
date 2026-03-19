@@ -7,7 +7,8 @@
     "start": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview --port 9000 --host"
+    "preview": "vite --port 9000 preview --host",
+    "host": "vite --port 9000 --host"
   },
   "dependencies": {
     "@dotenvx/dotenvx": "^1.51.4",
