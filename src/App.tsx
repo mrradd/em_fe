@@ -7,7 +7,6 @@ import { Home } from "./pages/Home";
 import { ChatPage } from "./pages/ChatPage";
 import { NewThreadButton } from "./components/NewThreadButton";
 import { useStores } from "./hooks/useStores";
-import { ModelSelector } from "./components/ModelSelector";
 import { MeatballsPage } from "./pages/MeatballsPage";
 import { useUiHook } from "./hooks/useUiHook";
 import { MeatballList } from "./components/MeatballList";

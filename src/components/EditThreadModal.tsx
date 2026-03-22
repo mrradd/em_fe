@@ -55,7 +55,6 @@ export const EditThreadModal = observer(({ threadId, meatballId, name, isOpened,
 
   const confirmPressed = () => {
     saveTransition(async () => {
-      //TODO CH. UPDATE FOR MODEL SELECTION
       await chatThreadStore.updateThread(
         threadId,
         newName,
